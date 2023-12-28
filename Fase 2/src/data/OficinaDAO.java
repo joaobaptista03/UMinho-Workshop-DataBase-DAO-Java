@@ -7,18 +7,15 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import src.business.Cliente;
-import src.business.Funcionario;
-import src.business.Veiculo;
-import src.business.Fatura;
-import src.business.Servico;
+import src.business.*;
 
-public class OficinaDAO {
+public class OficinaDAO implements OficinaDAOInterface{
 
     private static final String URL = DAOConfig.URL;
     private static final String USERNAME = DAOConfig.USERNAME;
@@ -112,18 +109,53 @@ public class OficinaDAO {
         }
     }
 
+    public int getNrClientes() {
+        int nrClientes = 0;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM clientes")) {
+
+            if (resultSet.next()) {
+                nrClientes = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nrClientes;
+    }
+
+    public boolean authenticateCliente(String clientEmail, String clientPassword) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT password FROM clientes WHERE email = ?")) {
+
+            preparedStatement.setString(1, clientEmail);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
+                    return storedPassword.equals(clientPassword);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void insertFuncionario(Funcionario funcionario) {
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, funcionario.getId());
             preparedStatement.setString(2, funcionario.getNome());
-            preparedStatement.setInt(3, funcionario.getNrCartao());
-            preparedStatement.setString(4, funcionario.getPosto());
+            preparedStatement.setString(3, funcionario.getEmail());
+            preparedStatement.setString(4, funcionario.getPassword());
+            preparedStatement.setInt(5, funcionario.getNrCartao());
+            preparedStatement.setString(6, funcionario.getPosto());
 
             List<String> competencias = funcionario.getCompetencias();
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
-            preparedStatement.setString(5, competenciasString);
+            preparedStatement.setString(7, competenciasString);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -134,17 +166,19 @@ public class OficinaDAO {
     public void updateFuncionario(Funcionario funcionario) {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE funcionarios SET nome = ?, nrCartao = ?, posto = ?, competencias = ? WHERE id = ?")) {
+                "UPDATE funcionarios SET nome = ?, nrCartao = ?, email = ?, password = ?, posto = ?, competencias = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, funcionario.getNome());
             preparedStatement.setInt(2, funcionario.getNrCartao());
-            preparedStatement.setString(3, funcionario.getPosto());
+            preparedStatement.setString(3, funcionario.getEmail());
+            preparedStatement.setString(4, funcionario.getPassword());
+            preparedStatement.setString(5, funcionario.getPosto());
 
             List<String> competencias = funcionario.getCompetencias();
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
-            preparedStatement.setString(5, competenciasString);
+            preparedStatement.setString(6, competenciasString);
 
-            preparedStatement.setInt(5, funcionario.getId());
+            preparedStatement.setInt(7, funcionario.getId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -162,6 +196,21 @@ public class OficinaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNrFuncionarios() {
+        int nrFuncionarios = 0;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM funcionarios")) {
+
+            if (resultSet.next()) {
+                nrFuncionarios = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nrFuncionarios;
     }
 
     public void insertVeiculo(Veiculo veiculo) {
@@ -209,6 +258,21 @@ public class OficinaDAO {
         }
     }
 
+    public int getNrVeiculos() {
+        int nrVeiculos = 0;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM veiculos")) {
+
+            if (resultSet.next()) {
+                nrVeiculos = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nrVeiculos;
+    }
+
     public void insertFatura(Fatura fatura) {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO faturas VALUES (?, ?)")) {
@@ -245,6 +309,21 @@ public class OficinaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNrFaturas() {
+        int nrFaturas = 0;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM faturas")) {
+
+            if (resultSet.next()) {
+                nrFaturas = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nrFaturas;
     }
     
     public void insertServico(Servico servico) {
@@ -294,5 +373,20 @@ public class OficinaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNrServicos() {
+        int nrServicos = 0;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM servicos")) {
+
+            if (resultSet.next()) {
+                nrServicos = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nrServicos;
     }
 }

@@ -6,20 +6,24 @@ import java.util.Objects;
 public class Funcionario {
     private int id;
     private String nome;
+    private String email;
+    private String password;
     private int nrCartao;
     private String posto;
     private List<String> competencias;
 
-    public Funcionario(int id, String nome, int nrCartao, String posto, List<String> competencias) {
+    public Funcionario(int id, String nome, String email, String password, int nrCartao, String posto, List<String> competencias) {
         this.id = id;
         this.nome = nome;
+        this.email = email;
+        this.password = password;
         this.nrCartao = nrCartao;
         this.posto = posto;
         this.competencias = competencias;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
@@ -32,6 +36,22 @@ public class Funcionario {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getNrCartao() {
@@ -66,12 +86,12 @@ public class Funcionario {
             return false;
         }
         Funcionario funcionario = (Funcionario) o;
-        return id == funcionario.id && Objects.equals(nome, funcionario.nome) && nrCartao == funcionario.nrCartao && Objects.equals(posto, funcionario.posto) && Objects.equals(competencias, funcionario.competencias);
+        return id == funcionario.id && Objects.equals(nome, funcionario.nome) && Objects.equals(email, funcionario.email) && Objects.equals(password, funcionario.password) && nrCartao == funcionario.nrCartao && Objects.equals(posto, funcionario.posto) && Objects.equals(competencias, funcionario.competencias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, nrCartao, posto, competencias);
+        return Objects.hash(id, nome, email, password, nrCartao, posto, competencias);
     }
 
     @Override
@@ -79,10 +99,12 @@ public class Funcionario {
         return "{" +
             " id='" + getId() + "'" +
             ", nome='" + getNome() + "'" +
+            ", email='" + getEmail() + "'" +
+            ", password='" + getPassword() + "'" +
             ", nrCartao='" + getNrCartao() + "'" +
             ", posto='" + getPosto() + "'" +
             ", competencias='" + getCompetencias() + "'" +
             "}";
     }
-    
+
 }

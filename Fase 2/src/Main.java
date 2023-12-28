@@ -2,16 +2,17 @@ package src;
 
 import java.io.IOException;
 
-import src.business.*;
 import src.data.OficinaDAO;
+import src.ui.Authentication;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        createDatabase();
-    }
-
-    private static void createDatabase() throws IOException {
         OficinaDAO oficinaDAO = new OficinaDAO();
-        System.out.println("Database created successfully!");
+
+        int authType = Authentication.authenticate(oficinaDAO);
+
+        if (authType == -1) return;
+
+        System.out.println("Welcome to the Car Service Center!");
     }
 }

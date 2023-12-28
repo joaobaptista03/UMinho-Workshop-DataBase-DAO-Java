@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS faturas (
 CREATE TABLE IF NOT EXISTS funcionarios (
     id INT PRIMARY KEY,
     nome VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(100),
     nrCartao INT,
     posto VARCHAR(50),
     competencias TEXT
