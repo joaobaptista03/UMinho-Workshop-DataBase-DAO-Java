@@ -30,34 +30,38 @@ public class OficinaDAO {
 
     public OficinaDAO() throws IOException {
         try (Connection connection = getConnection();) {
-            executeScript("CreateDB.sql", connection);
+            executeScript("src/data/CreateDB.sql", connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void executeScript(String scriptFileName, Connection connection) throws IOException, SQLException {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(scriptFileName);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-
-            StringBuilder scriptContent = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                scriptContent.append(line).append("\n");
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(scriptFileName)) {
+            if (inputStream == null) {
+                throw new IOException("Script file not found: " + scriptFileName);
             }
-
-            String[] queries = scriptContent.toString().split(";");
-
-            try (Statement statement = connection.createStatement()) {
-                for (String query : queries) {
-                    if (!query.trim().isEmpty()) {
-                        statement.addBatch(query);
-                    }
+    
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                StringBuilder scriptContent = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    scriptContent.append(line).append("\n");
                 }
-                statement.executeBatch();
+    
+                String[] queries = scriptContent.toString().split(";");
+    
+                try (Statement statement = connection.createStatement()) {
+                    for (String query : queries) {
+                        if (!query.trim().isEmpty()) {
+                            statement.addBatch(query);
+                        }
+                    }
+                    statement.executeBatch();
+                }
             }
         }
-    }
+    }    
 
     public void insertCliente(Cliente cliente) {
         try (Connection connection = getConnection();
