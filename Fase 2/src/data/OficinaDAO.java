@@ -1,9 +1,16 @@
 package src.data;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import src.business.Cliente;
 import src.business.Funcionario;
@@ -19,6 +26,37 @@ public class OficinaDAO {
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    }
+
+    public OficinaDAO() throws IOException {
+        try (Connection connection = getConnection();) {
+            executeScript("CreateDB.sql", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void executeScript(String scriptFileName, Connection connection) throws IOException, SQLException {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(scriptFileName);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            StringBuilder scriptContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                scriptContent.append(line).append("\n");
+            }
+
+            String[] queries = scriptContent.toString().split(";");
+
+            try (Statement statement = connection.createStatement()) {
+                for (String query : queries) {
+                    if (!query.trim().isEmpty()) {
+                        statement.addBatch(query);
+                    }
+                }
+                statement.executeBatch();
+            }
+        }
     }
 
     public void insertCliente(Cliente cliente) {
@@ -78,7 +116,10 @@ public class OficinaDAO {
             preparedStatement.setString(2, funcionario.getNome());
             preparedStatement.setInt(3, funcionario.getNrCartao());
             preparedStatement.setString(4, funcionario.getPosto());
-            preparedStatement.setString(5, funcionario.getCompetencias());
+
+            List<String> competencias = funcionario.getCompetencias();
+            String competenciasString = competencias.stream().collect(Collectors.joining(","));
+            preparedStatement.setString(5, competenciasString);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -94,7 +135,11 @@ public class OficinaDAO {
             preparedStatement.setString(1, funcionario.getNome());
             preparedStatement.setInt(2, funcionario.getNrCartao());
             preparedStatement.setString(3, funcionario.getPosto());
-            preparedStatement.setString(4, funcionario.getCompetencias());
+
+            List<String> competencias = funcionario.getCompetencias();
+            String competenciasString = competencias.stream().collect(Collectors.joining(","));
+            preparedStatement.setString(5, competenciasString);
+
             preparedStatement.setInt(5, funcionario.getId());
 
             preparedStatement.executeUpdate();

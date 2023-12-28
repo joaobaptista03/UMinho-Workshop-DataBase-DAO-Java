@@ -39,11 +39,11 @@ public class Veiculo {
         this.modelo= modelo;
     }
 
-    public TipoMotor getMotor() {
+    public TipoMotor getTipoMotor() {
         return this.tipoMotor;
     }
 
-    public void setMotor(TipoMotor tipoMotor) {
+    public void setTipoMotor(TipoMotor tipoMotor) {
         this.tipoMotor= tipoMotor;
     }
 
