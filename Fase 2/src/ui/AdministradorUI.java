@@ -11,10 +11,12 @@ import src.data.OficinaDAO;
 
 public class AdministradorUI {
     
+    private int administradorID;
     private OficinaDAO oficinaDAO;
     private BufferedReader reader;
 
-    public AdministradorUI(OficinaDAO oficinaDAO) {
+    public AdministradorUI(OficinaDAO oficinaDAO, int administradorID) {
+        this.administradorID = administradorID;
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }

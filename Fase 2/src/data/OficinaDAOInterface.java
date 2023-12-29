@@ -7,13 +7,13 @@ public interface OficinaDAOInterface {
     public void updateCliente(Cliente cliente);
     public void deleteCliente(int clienteId);
     public int getNrClientes();
-    public boolean authenticateCliente(String clientEmail, String clientPassword);
+    public int authenticateCliente(String clientEmail, String clientPassword);
 
     public void insertFuncionario(Funcionario funcionario);
     public void updateFuncionario(Funcionario funcionario);
     public void deleteFuncionario(int funcionarioID);
     public int getNrFuncionarios();
-    public boolean authenticateFuncionario(String username, String password);
+    public int authenticateFuncionario(String username, String password);
 
     public void insertVeiculo(Veiculo veiculo);
     public void updateVeiculo(Veiculo veiculo);
@@ -34,5 +34,5 @@ public interface OficinaDAOInterface {
     public void updateAdministrador(Administrator administrator);
     public void deleteAdministrador(int administradorID);
     public int getNrAdministradores();
-    public boolean authenticateAdministrator(String username, String password);
+    public int authenticateAdministrator(String username, String password);
 }

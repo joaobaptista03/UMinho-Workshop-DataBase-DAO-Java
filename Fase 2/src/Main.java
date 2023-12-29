@@ -10,24 +10,24 @@ public class Main {
         try {
             OficinaDAO oficinaDAO = new OficinaDAO();
 
-            int authType = AuthenticationUI.authenticate(oficinaDAO);
+            AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
-            if (authType == -1) {
+            if (auth.authType == -1) {
                 System.out.println("Autenticação falhada. A sair...");
                 return;
             }
 
             System.out.println("Bem vindo/a à Oficina!\n");
             
-            switch (authType) {
+            switch (auth.authType) {
                 case 1:
                     // Cliente
                     break;
                 case 2:
-                    new FuncionarioUI(oficinaDAO).execute();
+                    new FuncionarioUI(oficinaDAO, auth.id).execute();
                     break;
                 case 3:
-                    new AdministradorUI(oficinaDAO).execute();
+                    new AdministradorUI(oficinaDAO, auth.id).execute();
                     break;
                 default:
                     System.out.println("Cargo inválido. A sair...");

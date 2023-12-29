@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS servicos (
     FOREIGN KEY (veiculoMatricula) REFERENCES veiculos(matricula)
 );
 
-CREATE TABLE IF NOT EXISTS Administrador (
+CREATE TABLE IF NOT EXISTS administradores (
     id INT PRIMARY KEY,
     nome VARCHAR(100),
     email VARCHAR(100),

@@ -127,22 +127,22 @@ public class OficinaDAO implements OficinaDAOInterface{
         return nrClientes;
     }
 
-    public boolean authenticateCliente(String clientEmail, String clientPassword) {
+    public int authenticateCliente(String username, String password) {
         try (Connection connection = getConnection(true);
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT password FROM clientes WHERE email = ?")) {
-
-            preparedStatement.setString(1, clientEmail);
-
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM clientes WHERE email = ? AND password = ?")) {
+    
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+    
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String storedPassword = resultSet.getString("password");
-                    return storedPassword.equals(clientPassword);
+                    return resultSet.getInt("id");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
     public void insertFuncionario(Funcionario funcionario) {
@@ -216,25 +216,23 @@ public class OficinaDAO implements OficinaDAOInterface{
         return nrFuncionarios;
     }
 
-    public boolean authenticateFuncionario(String username, String password) {
+    public int authenticateFuncionario(String username, String password) {
         try (Connection connection = getConnection(true);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM funcionarios WHERE email = ? AND password = ?")) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM funcionarios WHERE email = ? AND password = ?")) {
+    
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-
+    
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    return count > 0;
+                    return resultSet.getInt("id");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
-
 
     public void insertVeiculo(Veiculo veiculo) {
         try (Connection connection = getConnection(true);
@@ -416,7 +414,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     public void insertAdministrador(Administrator administrator) {
         try (Connection connection = getConnection(true);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO Administrador VALUES (?, ?, ?, ?)")) {
+                "INSERT INTO administradores VALUES (?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, administrator.getId());
             preparedStatement.setString(2, administrator.getNome());
@@ -432,7 +430,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     public void updateAdministrador(Administrator administrator) {
         try (Connection connection = getConnection(true);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE Administrador SET nome = ?, email = ?, password = ? WHERE id = ?")) {
+                "UPDATE administradores SET nome = ?, email = ?, password = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, administrator.getNome());
             preparedStatement.setString(2, administrator.getEmail());
@@ -448,7 +446,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     public void deleteAdministrador(int administradorID) {
         try (Connection connection = getConnection(true);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                "DELETE FROM Administrador WHERE id = ?")) {
+                "DELETE FROM administradores WHERE id = ?")) {
 
             preparedStatement.setInt(1, administradorID);
 
@@ -462,7 +460,7 @@ public class OficinaDAO implements OficinaDAOInterface{
         int nrAdministradores = 0;
         try (Connection connection = getConnection(true);
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM Administrador")) {
+             ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM administradores")) {
 
             if (resultSet.next()) {
                 nrAdministradores = resultSet.getInt(1);
@@ -473,20 +471,21 @@ public class OficinaDAO implements OficinaDAOInterface{
         return nrAdministradores;
     }
 
-    public boolean authenticateAdministrator(String username, String password) {
+    public int authenticateAdministrator(String username, String password) {
         try (Connection connection = getConnection(true);
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                "SELECT * FROM Administrador WHERE email = ? AND password = ?")) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM administradores WHERE email = ? AND password = ?")) {
+    
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-
+    
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 }

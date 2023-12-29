@@ -8,10 +8,12 @@ import src.data.OficinaDAO;
 
 public class FuncionarioUI {
 
+    private int funcionarioID;
     private OficinaDAO oficinaDAO;
     private BufferedReader reader;
 
-    public FuncionarioUI(OficinaDAO oficinaDAO) {
+    public FuncionarioUI(OficinaDAO oficinaDAO, int funcionarioID) {
+        this.funcionarioID = funcionarioID;
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
