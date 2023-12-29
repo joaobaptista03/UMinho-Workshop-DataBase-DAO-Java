@@ -96,7 +96,6 @@ public class OficinaDAO implements OficinaDAOInterface{
         }
     }
     
-
     public void updateCliente(Cliente cliente) {
         try (Connection connection = getConnection(true);
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -161,28 +160,42 @@ public class OficinaDAO implements OficinaDAOInterface{
         return -1;
     }
 
-    public void insertFuncionario(Funcionario funcionario) {
+    public boolean insertFuncionario(Funcionario funcionario) {
         try (Connection connection = getConnection(true);
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-
-            preparedStatement.setInt(1, funcionario.getId());
-            preparedStatement.setString(2, funcionario.getNome());
-            preparedStatement.setString(3, funcionario.getEmail());
-            preparedStatement.setString(4, funcionario.getPassword());
-            preparedStatement.setInt(5, funcionario.getNrCartao());
-            preparedStatement.setString(6, funcionario.getPosto());
-            preparedStatement.setTime(7, funcionario.getHoraEntrada());
-            preparedStatement.setTime(8, funcionario.getHoraSaida());
-
+             PreparedStatement checkIfExists = connection.prepareStatement("SELECT COUNT(*) FROM funcionarios WHERE email = ? OR password = ? OR nrCartao = ?");
+             PreparedStatement insertFuncionario = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+    
+            checkIfExists.setString(1, funcionario.getEmail());
+            checkIfExists.setString(2, funcionario.getPassword());
+            checkIfExists.setInt(3, funcionario.getNrCartao());
+    
+            try (ResultSet resultSet = checkIfExists.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return false;
+                }
+            }
+    
+            insertFuncionario.setInt(1, funcionario.getId());
+            insertFuncionario.setString(2, funcionario.getNome());
+            insertFuncionario.setString(3, funcionario.getEmail());
+            insertFuncionario.setString(4, funcionario.getPassword());
+            insertFuncionario.setInt(5, funcionario.getNrCartao());
+            insertFuncionario.setString(6, funcionario.getPosto());
+            insertFuncionario.setTime(7, funcionario.getHoraEntrada());
+            insertFuncionario.setTime(8, funcionario.getHoraSaida());
+    
             List<String> competencias = funcionario.getCompetencias();
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
-            preparedStatement.setString(9, competenciasString);
-
-            preparedStatement.setInt(10, funcionario.getAdministradorAdicionado());
-
-            preparedStatement.executeUpdate();
+            insertFuncionario.setString(9, competenciasString);
+    
+            insertFuncionario.setInt(10, funcionario.getAdministradorAdicionado());
+    
+            insertFuncionario.executeUpdate();
+    
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

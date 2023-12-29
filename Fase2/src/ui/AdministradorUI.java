@@ -51,7 +51,7 @@ public class AdministradorUI {
         }
     }
 
-    private void adicionarFuncionario(OficinaDAO oficinaDAO) throws IOException {
+    private boolean adicionarFuncionario(OficinaDAO oficinaDAO) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\nAdicionar Funcionário:");
@@ -85,8 +85,13 @@ public class AdministradorUI {
 
         int nrFuncionarios = oficinaDAO.getNrFuncionarios();
         Funcionario novoFuncionario = new Funcionario(nrFuncionarios, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, competencias_list, administradorID);
-        oficinaDAO.insertFuncionario(novoFuncionario);
+        
+        if (!oficinaDAO.insertFuncionario(novoFuncionario)) {
+            System.err.println("Erro ao adicionar Funcionário!");
+            return false;
+        }
 
         System.out.println("Funcionário adicionado com sucesso!");
+        return true;
     }
 }

@@ -9,7 +9,7 @@ public interface OficinaDAOInterface {
     public int getNrClientes();
     public int authenticateCliente(String clientEmail, String clientPassword);
 
-    public void insertFuncionario(Funcionario funcionario);
+    public boolean insertFuncionario(Funcionario funcionario);
     public void updateFuncionario(Funcionario funcionario);
     public void deleteFuncionario(int funcionarioID);
     public int getNrFuncionarios();
