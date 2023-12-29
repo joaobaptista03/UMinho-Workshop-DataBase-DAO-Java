@@ -63,23 +63,39 @@ public class OficinaDAO implements OficinaDAOInterface{
         }
     }    
 
-    public void insertCliente(Cliente cliente) {
+    public boolean insertCliente(Cliente cliente) {
         try (Connection connection = getConnection(true);
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO clientes VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+             PreparedStatement checkIfExists = connection.prepareStatement("SELECT COUNT(*) FROM clientes WHERE email = ? OR nif = ? OR telefone = ?");
+             PreparedStatement insertCliente = connection.prepareStatement("INSERT INTO clientes VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+    
+            checkIfExists.setString(1, cliente.getEmail());
+            checkIfExists.setInt(2, cliente.getNif());
+            checkIfExists.setInt(3, cliente.getTelefone());
 
-            preparedStatement.setInt(1, cliente.getId());
-            preparedStatement.setString(2, cliente.getNome());
-            preparedStatement.setInt(3, cliente.getNif());
-            preparedStatement.setString(4, cliente.getMorada());
-            preparedStatement.setString(5, cliente.getEmail());
-            preparedStatement.setString(6, cliente.getPassword());
-            preparedStatement.setInt(7, cliente.getTelefone());
-
-            preparedStatement.executeUpdate();
+    
+            try (ResultSet resultSet = checkIfExists.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return false;
+                }
+            }
+    
+            insertCliente.setInt(1, cliente.getId());
+            insertCliente.setString(2, cliente.getNome());
+            insertCliente.setInt(3, cliente.getNif());
+            insertCliente.setString(4, cliente.getMorada());
+            insertCliente.setString(5, cliente.getEmail());
+            insertCliente.setString(6, cliente.getPassword());
+            insertCliente.setInt(7, cliente.getTelefone());
+    
+            insertCliente.executeUpdate();
+            
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
+    
 
     public void updateCliente(Cliente cliente) {
         try (Connection connection = getConnection(true);
@@ -413,6 +429,24 @@ public class OficinaDAO implements OficinaDAOInterface{
         }
         return nrServicos;
     }
+
+    public String consultarEstadoServico(int servicoId) {
+        String estadoServico = null;
+        try (Connection connection = getConnection(true);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT estado FROM servicos WHERE id = ?")) {
+    
+            preparedStatement.setInt(1, servicoId);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    estadoServico = resultSet.getString("estado");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return estadoServico;
+    }    
 
     public void insertAdministrador(Administrator administrator) {
         try (Connection connection = getConnection(true);

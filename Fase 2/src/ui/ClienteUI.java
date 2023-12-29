@@ -31,7 +31,9 @@ public class ClienteUI {
 
                 switch (choice) {
                     case 1:
-                        consultarEstadoServico();
+                        System.out.print("Insira o ID do serviço: ");
+                        int servicoID = Integer.parseInt(reader.readLine());
+                        System.out.println("Estado do pedido: " + oficinaDAO.consultarEstadoServico(servicoID));
                         break;
                     case 2:
                         System.out.println("A sair do Menu Cliente...");
@@ -44,9 +46,5 @@ public class ClienteUI {
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-    }
-
-    private void consultarEstadoServico() {
-        // consultar estado do serviço
     }
 }

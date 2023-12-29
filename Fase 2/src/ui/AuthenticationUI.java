@@ -48,7 +48,7 @@ public class AuthenticationUI {
                     int id = oficinaDAO.getNrClientes();
                     Cliente newCliente = new Cliente(id, newClientName, newClientNIF, newClientAddress, newClientEmail, newClientPassword, newClientTelephone);
 
-                    oficinaDAO.insertCliente(newCliente);
+                    if (!oficinaDAO.insertCliente(newCliente)) return null;
                     return new AuthTypeID(1, id);
                 } else {
                     System.out.println("Opção inválida. A sair...");

@@ -3,7 +3,7 @@ package src.data;
 import src.business.*;
 
 public interface OficinaDAOInterface {
-    public void insertCliente(Cliente cliente);
+    public boolean insertCliente(Cliente cliente);
     public void updateCliente(Cliente cliente);
     public void deleteCliente(int clienteId);
     public int getNrClientes();
@@ -29,7 +29,8 @@ public interface OficinaDAOInterface {
     public void updateServico(Servico servico);
     public void deleteServico(int servicoID);
     public int getNrServicos();
-
+    public String consultarEstadoServico(int servicoId);
+    
     public void insertAdministrador(Administrator administrator);
     public void updateAdministrador(Administrator administrator);
     public void deleteAdministrador(int administradorID);
