@@ -12,7 +12,7 @@ public class Main {
 
             AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
-            if (auth.authType == -1) {
+            if (auth == null) {
                 System.out.println("Autenticação falhada. A sair...");
                 return;
             }
