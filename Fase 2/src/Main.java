@@ -21,7 +21,7 @@ public class Main {
             
             switch (auth.authType) {
                 case 1:
-                    // Cliente
+                    new ClienteUI(oficinaDAO, auth.id).execute();
                     break;
                 case 2:
                     new FuncionarioUI(oficinaDAO, auth.id).execute();

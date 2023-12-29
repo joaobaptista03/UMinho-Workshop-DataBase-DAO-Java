@@ -23,7 +23,7 @@ public class FuncionarioUI {
             int choice;
 
             do {
-                System.out.println("Escolha uma opção para funcionários:");
+                System.out.println("Menu do Funcionário:");
                 System.out.println("1. Consultar Informações de um Carro");
                 System.out.println("2. Dar Entrada e Saída do Turno");
                 System.out.println("3. Consultar Horário");

@@ -26,7 +26,7 @@ public class AdministradorUI {
             int choice;
 
             do {
-                System.out.println("\nAdministrador Menu:");
+                System.out.println("Menu do Administrador:");
                 System.out.println("1. Adicionar Funcionário");
                 System.out.println("2. Sair");
                 System.out.print("Escolha uma opção: ");
