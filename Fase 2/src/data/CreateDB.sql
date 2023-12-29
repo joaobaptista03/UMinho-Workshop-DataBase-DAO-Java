@@ -48,3 +48,10 @@ CREATE TABLE IF NOT EXISTS servicos (
     FOREIGN KEY (faturaNr) REFERENCES faturas(nrFatura),
     FOREIGN KEY (veiculoMatricula) REFERENCES veiculos(matricula)
 );
+
+CREATE TABLE IF NOT EXISTS Administrador (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(100)
+);

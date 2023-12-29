@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import src.business.Cliente;
 import src.data.OficinaDAO;
 
-public class Authentication {
+public class AuthenticationUI {
     public static int authenticate(OficinaDAO oficinaDAO) throws NumberFormatException, IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -47,9 +47,9 @@ public class Authentication {
                     Cliente newCliente = new Cliente(id, newClientName, newClientNIF, newClientAddress, newClientEmail, newClientPassword, newClientTelephone);
 
                     oficinaDAO.insertCliente(newCliente);
-                    return 2;
+                    return 1;
                 } else {
-                    System.out.println("Invalid choice. Exiting...");
+                    System.out.println("Opção inválida. A sair...");
                     return -1;
                 }
 
@@ -58,54 +58,34 @@ public class Authentication {
                 String funcionarioUsername = "";
                 String funcionarioPassword = "";
                 do {
-                    System.out.println("Enter your username:");
+                    System.out.println("Digita o teu email:");
                     funcionarioUsername = reader.readLine();
-                    System.out.println("Enter your password:");
+                    System.out.println("Digita a tua password:");
                     funcionarioPassword = reader.readLine();
 
-                    funcionarioAuthenticated = authenticateFuncionario(funcionarioUsername, funcionarioPassword);
+                    funcionarioAuthenticated = oficinaDAO.authenticateFuncionario(funcionarioUsername, funcionarioPassword);
                 } while (!funcionarioAuthenticated);
 
-                return 3;
+                return 2;
 
             case 3:
                 boolean adminAuthenticated = false;
                 String adminUsername = "";
                 String adminPassword = "";
                 do {
-                    System.out.println("Enter your username:");
+                    System.out.println("Digita o teu email:");
                     adminUsername = reader.readLine();
-                    System.out.println("Enter your password:");
+                    System.out.println("Digita a tua password:");
                     adminPassword = reader.readLine();
 
-                    adminAuthenticated = authenticateAdministrator(adminUsername, adminPassword);
+                    adminAuthenticated = oficinaDAO.authenticateAdministrator(adminUsername, adminPassword);
                 } while (!adminAuthenticated);
 
-                return 4;
+                return 3;
 
             default:
-                System.out.println("Invalid choice. Exiting...");
+                System.out.println("Opção inválida. A sair...");
                 return -1;
-        }
-    }
-
-    private static boolean authenticateFuncionario(String username, String password) {
-        if ("funcionarioUser".equals(username) && "funcionarioPassword".equals(password)) {
-            System.out.println("Authentication successful for Funcionario!");
-            return true;
-        } else {
-            System.out.println("Authentication failed for Funcionario. Try again...");
-            return false;
-        }
-    }
-
-    private static boolean authenticateAdministrator(String username, String password) {
-        if ("adminUser".equals(username) && "adminPassword".equals(password)) {
-            System.out.println("Authentication successful for Administrator!");
-            return true;
-        } else {
-            System.out.println("Authentication failed for Administrator. Try again...");
-            return false;
         }
     }
 }
