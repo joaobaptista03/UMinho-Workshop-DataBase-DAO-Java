@@ -2,10 +2,12 @@ CREATE DATABASE IF NOT EXISTS OficinaDB;
 
 USE OficinaDB;
 
-CREATE TABLE IF NOT EXISTS faturas (
-    nrFatura INT PRIMARY KEY,
-    clienteId INT,
-    FOREIGN KEY (clienteId) REFERENCES clientes(id)
+CREATE TABLE IF NOT EXISTS veiculos (
+    matricula VARCHAR(20) PRIMARY KEY,
+    marca VARCHAR(50),
+    modelo VARCHAR(50),
+    tipo_motor VARCHAR(20),
+    informacoes TEXT
 );
 
 CREATE TABLE IF NOT EXISTS clientes (

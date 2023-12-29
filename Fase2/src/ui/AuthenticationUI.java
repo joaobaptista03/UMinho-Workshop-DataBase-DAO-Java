@@ -16,10 +16,10 @@ public class AuthenticationUI {
 
         switch (userTypeChoice) {
             case 1:
-                System.out.println("Já tens conta? (sim/não)");
+                System.out.println("Já tens conta? (s/n)");
                 String registeredClientChoice = reader.readLine().toLowerCase();
 
-                if (registeredClientChoice.equals("sim")) {
+                if (registeredClientChoice.equals("s")) {
                     System.out.println("Digita o teu e-mail:");
                     String clientUsername = reader.readLine();
                     System.out.println("Digita a tua palavra-passe:");
@@ -30,7 +30,7 @@ public class AuthenticationUI {
                     if (clienteID != -1) return new AuthTypeID(1, clienteID);
                     return null;
 
-                } else if (registeredClientChoice.equals("não")) {
+                } else if (registeredClientChoice.equals("n")) {
                     System.out.println("Criar uma nova conta:");
                     System.out.println("Digita o e-mail para a nova conta:");
                     String newClientEmail = reader.readLine();

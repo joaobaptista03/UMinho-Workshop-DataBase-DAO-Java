@@ -3,16 +3,12 @@ package src;
 import java.io.IOException;
 
 import src.ui.*;
-import src.business.Administrator;
 import src.data.OficinaDAO;
 
 public class Main {
     public static void main(String[] args) {
         try {
             OficinaDAO oficinaDAO = new OficinaDAO();
-            Administrator a = new Administrator(1, "João Pedro", "joaopedromotabaptista2003@gmail.com", "password");
-            oficinaDAO.insertAdministrador(a);
-
             AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
             if (auth == null) {
