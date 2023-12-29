@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS funcionarios (
     password VARCHAR(100),
     nrCartao INT,
     posto VARCHAR(50),
-    competencias TEXT
+    competencias TEXT,
+    administradorAdicionado INT
 );
 
 CREATE TABLE IF NOT EXISTS servicos (

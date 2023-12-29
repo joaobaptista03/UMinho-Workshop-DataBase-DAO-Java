@@ -49,7 +49,7 @@ public class AdministradorUI {
         }
     }
 
-    private static void adicionarFuncionario(OficinaDAO oficinaDAO) throws IOException {
+    private void adicionarFuncionario(OficinaDAO oficinaDAO) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\nAdicionar Funcionário:");
@@ -74,7 +74,7 @@ public class AdministradorUI {
         List<String> competencias_list = Arrays.asList(competencias.split(","));
 
         int nrFuncionarios = oficinaDAO.getNrFuncionarios();
-        Funcionario novoFuncionario = new Funcionario(nrFuncionarios, nome, email, password, nrCartao, posto, competencias_list);
+        Funcionario novoFuncionario = new Funcionario(nrFuncionarios, nome, email, password, nrCartao, posto, competencias_list, administradorID);
         oficinaDAO.insertFuncionario(novoFuncionario);
 
         System.out.println("Funcionário adicionado com sucesso!");

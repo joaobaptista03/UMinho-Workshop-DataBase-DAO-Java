@@ -147,7 +147,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public void insertFuncionario(Funcionario funcionario) {
         try (Connection connection = getConnection(true);
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, funcionario.getId());
             preparedStatement.setString(2, funcionario.getNome());
@@ -160,6 +160,8 @@ public class OficinaDAO implements OficinaDAOInterface{
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
             preparedStatement.setString(7, competenciasString);
 
+            preparedStatement.setInt(8, funcionario.getAdministradorAdicionado());
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,7 +171,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     public void updateFuncionario(Funcionario funcionario) {
         try (Connection connection = getConnection(true);
              PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE funcionarios SET nome = ?, nrCartao = ?, email = ?, password = ?, posto = ?, competencias = ? WHERE id = ?")) {
+                "UPDATE funcionarios SET nome = ?, nrCartao = ?, email = ?, password = ?, posto = ?, competencias = ?, administradorAdicionado = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, funcionario.getNome());
             preparedStatement.setInt(2, funcionario.getNrCartao());
@@ -182,6 +184,7 @@ public class OficinaDAO implements OficinaDAOInterface{
             preparedStatement.setString(6, competenciasString);
 
             preparedStatement.setInt(7, funcionario.getId());
+            preparedStatement.setInt(8, funcionario.getAdministradorAdicionado());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
