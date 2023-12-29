@@ -105,12 +105,18 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteCliente(int clienteId) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM clientes WHERE id = ?")) {
-
-            preparedStatement.setInt(1, clienteId);
-
-            preparedStatement.executeUpdate();
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+    
+            try (PreparedStatement deleteFaturas = connection.prepareStatement("DELETE FROM faturas WHERE clienteId = ?")) {
+                deleteFaturas.setInt(1, clienteId);
+                deleteFaturas.executeUpdate();
+            }
+    
+            try (PreparedStatement deleteCliente = connection.prepareStatement("DELETE FROM clientes WHERE id = ?")) {
+                deleteCliente.setInt(1, clienteId);
+                deleteCliente.executeUpdate();
+            }
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -215,12 +221,18 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteFuncionario(int funcionarioId) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM funcionarios WHERE id = ?")) {
-
-            preparedStatement.setInt(1, funcionarioId);
-
-            preparedStatement.executeUpdate();
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+    
+            try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE funcionarioId = ?")) {
+                deleteServicos.setInt(1, funcionarioId);
+                deleteServicos.executeUpdate();
+            }
+    
+            try (PreparedStatement deleteFuncionario = connection.prepareStatement("DELETE FROM funcionarios WHERE id = ?")) {
+                deleteFuncionario.setInt(1, funcionarioId);
+                deleteFuncionario.executeUpdate();
+            }
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -293,12 +305,18 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteVeiculo(String matricula) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM veiculos WHERE matricula = ?")) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
 
-            preparedStatement.setString(1, matricula);
+            try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE veiculoMatricula = ?")) {
+                deleteServicos.setString(1, matricula);
+                deleteServicos.executeUpdate();
+            }
 
-            preparedStatement.executeUpdate();
+            try (PreparedStatement deleteVeiculo = connection.prepareStatement("DELETE FROM veiculos WHERE matricula = ?")) {
+                deleteVeiculo.setString(1, matricula);
+                deleteVeiculo.executeUpdate();
+            }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -346,12 +364,18 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteFatura(int nrFatura) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM faturas WHERE nrFatura = ?")) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
 
-            preparedStatement.setInt(1, nrFatura);
-
-            preparedStatement.executeUpdate();
+            try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE faturaNr = ?")) {
+                deleteServicos.setInt(1, nrFatura);
+                deleteServicos.executeUpdate();
+            }
+    
+            try (PreparedStatement deleteFatura = connection.prepareStatement("DELETE FROM faturas WHERE nrFatura = ?")) {
+                deleteFatura.setInt(1, nrFatura);
+                deleteFatura.executeUpdate();
+            }
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
