@@ -3,7 +3,11 @@ package src.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import src.business.*;
 import src.data.OficinaDAO;
 
 public class FuncionarioUI {
@@ -18,12 +22,12 @@ public class FuncionarioUI {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public void execute() {
+    public void execute() throws ParseException {
         try {
             int choice;
 
             do {
-                System.out.println("Menu do Funcionário:");
+                System.out.println("\nMenu do Funcionário:");
                 System.out.println("1. Consultar Informações de um Carro");
                 System.out.println("2. Dar Entrada e Saída do Turno");
                 System.out.println("3. Consultar Horário");
@@ -31,6 +35,7 @@ public class FuncionarioUI {
                 System.out.println("5. Agendar Serviço");
                 System.out.println("6. Registar Pagamento do Serviço");
                 System.out.println("7. Sair.");
+                System.out.print("Escolha uma opção: ");
 
                 choice = Integer.parseInt(reader.readLine());
 
@@ -66,7 +71,25 @@ public class FuncionarioUI {
     }
 
     private void consultarInformacoesCarro() {
-        // consultar informações de um carro
+        try {
+            System.out.print("Insira a matrícula do carro: \n");
+            String matricula = reader.readLine();
+            
+            Veiculo carro = oficinaDAO.getVeiculo(matricula);
+    
+            if (carro != null) {
+                System.out.println("Informações do Carro:");
+                System.out.println("Matrícula: " + carro.getMatricula());
+                System.out.println("Marca: " + carro.getMarca());
+                System.out.println("Modelo: " + carro.getModelo());
+                System.out.println("Tipo de Motor: " + carro.getTipoMotor());
+                System.out.println("Ano: " + carro.getInformacoes());
+            } else {
+                System.out.println("Carro não encontrado.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void darEntradaSaidaTurno() {
@@ -74,18 +97,69 @@ public class FuncionarioUI {
     }
 
     private void consultarHorario() {
-        // consultar o horário
+        try {
+            System.out.print("Insira o ID do funcionário: ");
+    
+            Funcionario funcionario = oficinaDAO.getFuncionario(funcionarioID);
+    
+            System.out.println("Horário de trabalho do funcionário " + funcionario.getNome() + ":");
+            System.out.println("Hora de entrada: " + funcionario.getHoraEntrada());
+            System.out.println("Hora de saída: " + funcionario.getHoraSaida());
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     private void alterarEstadoServico() {
-        // alterar o estado do serviço
+        try {
+            System.out.print("Insira o ID do serviço: ");
+            int servicoID = Integer.parseInt(reader.readLine());
+
+            System.out.print("Insira o novo estado do serviço: ");
+            String estado = reader.readLine();
+    
+            Servico novoServico = oficinaDAO.getServico(servicoID);
+            novoServico.setEstado(estado);
+            oficinaDAO.updateServico(novoServico);
+
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void agendarServico() {
-        // agendar serviço
+    private void agendarServico() throws IOException, ParseException {
+        int nrServicos = oficinaDAO.getNrServicos();
+
+        System.out.println("Insira o ID do cliente: ");
+        int clienteID = Integer.parseInt(reader.readLine());
+
+        System.out.println("Insira a data e hora do serviço (dd/mm/aaaa hh:mm): ");
+        Date dataHora = new SimpleDateFormat("dd/MM/YYYY HH:mm").parse(reader.readLine());
+
+        System.out.println("Insira a matricula do carro: ");
+        String matricula = reader.readLine();
+
+        System.out.println("Insira o tipo de serviço: ");
+        String tipoServico = reader.readLine();
+
+        System.out.println("Insira o preço: ");
+        float preco = Float.parseFloat(reader.readLine());
+
+        Fatura temp = new Fatura(oficinaDAO.getNrFaturas(), oficinaDAO.getCliente(clienteID), preco, false);
+        oficinaDAO.insertFatura(temp);
+
+        Servico servico = new Servico(nrServicos, "Agendado", dataHora, oficinaDAO.getFuncionario(funcionarioID), temp, oficinaDAO.getVeiculo(matricula), ServicoTipo.valueOf(tipoServico));
+        oficinaDAO.insertServico(servico);
     }
 
-    private void registarPagamentoServico() {
-        // registar pagamento de serviço
+    private void registarPagamentoServico() throws NumberFormatException, IOException {
+        System.out.println("Insira o ID do serviço: ");
+        int servicoID = Integer.parseInt(reader.readLine());
+
+        Fatura f = oficinaDAO.getServico(servicoID).getFatura();
+        f.setPago(true);
+
+        oficinaDAO.updateFatura(f);
     }
 }

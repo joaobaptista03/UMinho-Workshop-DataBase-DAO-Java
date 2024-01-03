@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS clientes (
 CREATE TABLE IF NOT EXISTS faturas (
     nrFatura INT PRIMARY KEY,
     clienteId INT,
+    preco FLOAT,
+    pago BOOLEAN,
     FOREIGN KEY (clienteId) REFERENCES clientes(id)
 );
 

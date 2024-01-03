@@ -10,6 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,6 +158,30 @@ public class OficinaDAO implements OficinaDAOInterface{
         return -1;
     }
 
+    public Cliente getCliente(int id) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM clientes WHERE id = ?")) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nome = resultSet.getString("nome");
+                    int nif = resultSet.getInt("nif");
+                    String morada = resultSet.getString("morada");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    int telefone = resultSet.getInt("telefone");
+
+                    return new Cliente(id, nome, nif, morada, email, password, telefone);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean insertFuncionario(Funcionario funcionario) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement checkIfExists = connection.prepareStatement("SELECT COUNT(*) FROM funcionarios WHERE email = ? OR password = ? OR nrCartao = ?");
@@ -271,6 +298,36 @@ public class OficinaDAO implements OficinaDAOInterface{
         return -1;
     }
 
+    public Funcionario getFuncionario(int id) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM funcionarios WHERE id = ?")) {
+    
+            preparedStatement.setInt(1, id);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nome = resultSet.getString("nome");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    int nrCartao = resultSet.getInt("nrCartao");
+                    String posto = resultSet.getString("posto");
+                    Time horaEntrada = resultSet.getTime("horaEntrada");
+                    Time horaSaida = resultSet.getTime("horaSaida");
+                    String competenciasString = resultSet.getString("competencias");
+
+                    List<String> competencias = Arrays.asList(competenciasString.split(","));
+
+                    int administradorAdicionado = resultSet.getInt("administradorAdicionado");
+
+                    return new Funcionario(id, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, competencias, administradorAdicionado);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void insertVeiculo(Veiculo veiculo) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO veiculos VALUES (?, ?, ?, ?, ?)")) {
@@ -337,12 +394,37 @@ public class OficinaDAO implements OficinaDAOInterface{
         return nrVeiculos;
     }
 
+    public Veiculo getVeiculo(String matricula) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM veiculos WHERE matricula = ?")) {
+    
+            preparedStatement.setString(1, matricula);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String marca = resultSet.getString("marca");
+                    String modelo = resultSet.getString("modelo");
+                    String tipoMotorString = resultSet.getString("tipo_motor");
+                    TipoMotor tipoMotor = TipoMotor.valueOf(tipoMotorString);
+                    String informacoes = resultSet.getString("informacoes");
+                
+                    return new Veiculo(matricula, marca, modelo, tipoMotor, informacoes);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void insertFatura(Fatura fatura) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO faturas VALUES (?, ?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO faturas VALUES (?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, fatura.getNrFatura());
             preparedStatement.setInt(2, fatura.getCliente().getId());
+            preparedStatement.setFloat(3, fatura.getPreco());
+            preparedStatement.setBoolean(4, fatura.getPago());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -352,10 +434,12 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public void updateFatura(Fatura fatura) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE faturas SET clienteId = ? WHERE nrFatura = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE faturas SET clienteId = ?, preco = ?, pago = ? WHERE nrFatura = ?")) {
 
             preparedStatement.setInt(1, fatura.getCliente().getId());
-            preparedStatement.setInt(2, fatura.getNrFatura());
+            preparedStatement.setFloat(2, fatura.getPreco());
+            preparedStatement.setBoolean(3, fatura.getPago());
+            preparedStatement.setInt(4, fatura.getNrFatura());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -394,6 +478,29 @@ public class OficinaDAO implements OficinaDAOInterface{
             e.printStackTrace();
         }
         return nrFaturas;
+    }
+
+    public Fatura getFatura(int nrFatura) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM faturas WHERE nrFatura = ?")) {
+    
+            preparedStatement.setInt(1, nrFatura);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int clienteId = resultSet.getInt("clienteId");
+                    float preco = resultSet.getFloat("preco");
+                    boolean pago = resultSet.getBoolean("pago");
+
+                    Cliente cliente = getCliente(clienteId);
+                
+                    return new Fatura(nrFatura, cliente, preco, pago);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     public void insertServico(Servico servico) {
@@ -478,6 +585,35 @@ public class OficinaDAO implements OficinaDAOInterface{
         return estadoServico;
     }    
 
+    public Servico getServico(int id) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM servicos WHERE id = ?")) {
+    
+            preparedStatement.setInt(1, id);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String estado = resultSet.getString("estado");
+                    Date dataHora = resultSet.getTimestamp("dataHora");
+                    int funcionarioId = resultSet.getInt("funcionarioId");
+                    int faturaNr = resultSet.getInt("faturaNr");
+                    String veiculoMatricula = resultSet.getString("veiculoMatricula");
+                    String servicoTipoString = resultSet.getString("servicoTipo");
+                    ServicoTipo servicoTipo = ServicoTipo.valueOf(servicoTipoString);
+                
+                    Funcionario funcionario = getFuncionario(funcionarioId);
+                    Fatura fatura = getFatura(faturaNr);
+                    Veiculo veiculo = getVeiculo(veiculoMatricula);
+                
+                    return new Servico(id, estado, new Date(dataHora.getTime()), funcionario, fatura, veiculo, servicoTipo);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void insertAdministrador(Administrator administrator) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -554,5 +690,26 @@ public class OficinaDAO implements OficinaDAOInterface{
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public Administrator getAdministrador(int id) {
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM administradores WHERE id = ?")) {
+    
+            preparedStatement.setInt(1, id);
+    
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nome = resultSet.getString("nome");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                
+                    return new Administrator(id, nome, email, password);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

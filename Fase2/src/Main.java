@@ -1,12 +1,18 @@
 package src;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import src.ui.*;
+import src.business.*;
 import src.data.OficinaDAO;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         try {
             OficinaDAO oficinaDAO = new OficinaDAO();
             AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
@@ -20,7 +26,7 @@ public class Main {
             
             switch (auth.authType) {
                 case 1:
-                    new ClienteUI(oficinaDAO, auth.id).execute();
+                    new ClienteUI(oficinaDAO).execute();
                     break;
                 case 2:
                     new FuncionarioUI(oficinaDAO, auth.id).execute();

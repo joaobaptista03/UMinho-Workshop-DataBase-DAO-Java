@@ -11,6 +11,16 @@ public class Servico {
     private Veiculo Veiculo;
     private ServicoTipo servicoTipo;
 
+    public Servico(int id, String estado, Date dataHora, Funcionario funcionario, Fatura fatura, Veiculo veiculo, ServicoTipo servicoTipo) {
+        this.id = id;
+        this.estado = estado;
+        this.dataHora = dataHora;
+        this.funcionario = funcionario;
+        this.fatura = fatura;
+        Veiculo = veiculo;
+        this.servicoTipo = servicoTipo;
+    }
+
     public int getId() {
         return id;
     }

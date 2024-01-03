@@ -8,12 +8,10 @@ import src.data.OficinaDAO;
 
 public class ClienteUI {
 
-    private int clienteID;
     private OficinaDAO oficinaDAO;
     private BufferedReader reader;
 
-    public ClienteUI(OficinaDAO oficinaDAO, int clienteID) {
-        this.clienteID = clienteID;
+    public ClienteUI(OficinaDAO oficinaDAO) {
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -23,7 +21,7 @@ public class ClienteUI {
             int choice;
 
             do {
-                System.out.println("Menu do Cliente:");
+                System.out.println("\nMenu do Cliente:");
                 System.out.println("1. Consultar Estado do Serviço");
                 System.out.println("2. Sair");
                 System.out.print("Escolha uma opção: ");
@@ -33,7 +31,11 @@ public class ClienteUI {
                     case 1:
                         System.out.print("Insira o ID do serviço: ");
                         int servicoID = Integer.parseInt(reader.readLine());
-                        System.out.println("Estado do pedido: " + oficinaDAO.consultarEstadoServico(servicoID));
+                        String estado = oficinaDAO.consultarEstadoServico(servicoID);
+
+                        if (estado != null) System.out.println("Estado do pedido: " + estado);
+                        else System.out.println("Serviço não encontrado.");
+                        
                         break;
                     case 2:
                         System.out.println("A sair do Menu Cliente...");
