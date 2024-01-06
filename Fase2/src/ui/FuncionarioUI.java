@@ -168,7 +168,7 @@ public class FuncionarioUI {
         Fatura temp = new Fatura(oficinaDAO.getNrFaturas(), oficinaDAO.getCliente(clienteID), preco, false);
         oficinaDAO.insertFatura(temp);
 
-        Servico servico = new Servico(nrServicos, "Agendado", dataHora, oficinaDAO.getFuncionario(funcionarioID), temp, oficinaDAO.getVeiculo(matricula), ServicoTipo.valueOf(tipoServico));
+        Servico servico = new Servico(nrServicos, "Agendado", dataHora, oficinaDAO.getFuncionario(funcionarioID), temp, oficinaDAO.getVeiculo(matricula), Servico.ServicoTipo.valueOf(tipoServico));
         oficinaDAO.insertServico(servico);
     }
 

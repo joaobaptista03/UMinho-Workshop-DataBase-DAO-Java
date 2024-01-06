@@ -722,7 +722,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                     int faturaNr = resultSet.getInt("faturaNr");
                     String veiculoMatricula = resultSet.getString("veiculoMatricula");
                     String servicoTipoString = resultSet.getString("servicoTipo");
-                    ServicoTipo servicoTipo = ServicoTipo.valueOf(servicoTipoString);
+                    Servico.ServicoTipo servicoTipo = Servico.ServicoTipo.valueOf(servicoTipoString);
                 
                     Funcionario funcionario = getFuncionario(funcionarioId);
                     Fatura fatura = getFatura(faturaNr);
