@@ -2,20 +2,14 @@ package src;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalTime;
-import java.util.ArrayList;
 
 import src.ui.*;
-import src.business.Funcionario;
 import src.data.OficinaDAO;
 
 public class Main {
     public static void main(String[] args) throws ParseException {
         try {
             OficinaDAO oficinaDAO = new OficinaDAO();
-
-            oficinaDAO.insertFuncionario(new Funcionario(0, "João", "mail", "pass", 123, "posto", LocalTime.parse("18:00"), LocalTime.parse("18:00"), new ArrayList<>(), new ArrayList<>(), 0));
-
             AuthenticationUI.AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
             if (auth == null) {
