@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,8 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -203,8 +206,8 @@ public class OficinaDAO implements OficinaDAOInterface{
             insertFuncionario.setString(4, funcionario.getPassword());
             insertFuncionario.setInt(5, funcionario.getNrCartao());
             insertFuncionario.setString(6, funcionario.getPosto());
-            insertFuncionario.setTime(7, funcionario.getHoraEntrada());
-            insertFuncionario.setTime(8, funcionario.getHoraSaida());
+            insertFuncionario.setTime(7, Time.valueOf(funcionario.getHoraEntrada()));
+            insertFuncionario.setTime(8, Time.valueOf(funcionario.getHoraSaida()));
     
             List<String> competencias = funcionario.getCompetencias();
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
@@ -231,8 +234,8 @@ public class OficinaDAO implements OficinaDAOInterface{
             preparedStatement.setString(3, funcionario.getEmail());
             preparedStatement.setString(4, funcionario.getPassword());
             preparedStatement.setString(5, funcionario.getPosto());
-            preparedStatement.setTime(6, funcionario.getHoraEntrada());
-            preparedStatement.setTime(7, funcionario.getHoraSaida());
+            preparedStatement.setTime(6, Time.valueOf(funcionario.getHoraEntrada()));
+            preparedStatement.setTime(7, Time.valueOf(funcionario.getHoraSaida()));
 
             List<String> competencias = funcionario.getCompetencias();
             String competenciasString = competencias.stream().collect(Collectors.joining(","));
@@ -311,15 +314,16 @@ public class OficinaDAO implements OficinaDAOInterface{
                     String password = resultSet.getString("password");
                     int nrCartao = resultSet.getInt("nrCartao");
                     String posto = resultSet.getString("posto");
-                    Time horaEntrada = resultSet.getTime("horaEntrada");
-                    Time horaSaida = resultSet.getTime("horaSaida");
+                    LocalTime horaEntrada = resultSet.getTime("horaEntrada").toLocalTime();
+                    LocalTime horaSaida = resultSet.getTime("horaSaida").toLocalTime();
+                    List<Turno> turnos = this.getTurnosFuncionario(id);
                     String competenciasString = resultSet.getString("competencias");
 
                     List<String> competencias = Arrays.asList(competenciasString.split(","));
 
                     int administradorAdicionado = resultSet.getInt("administradorAdicionado");
 
-                    return new Funcionario(id, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, competencias, administradorAdicionado);
+                    return new Funcionario(id, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, turnos, competencias, administradorAdicionado);
                 }
             }
         } catch (SQLException e) {
@@ -327,6 +331,125 @@ public class OficinaDAO implements OficinaDAOInterface{
         }
         return null;
     }
+
+    public List<Turno> getTurnosFuncionario(int funcionarioId) {
+        List<Turno> turnos = new ArrayList<>();
+        String query = "SELECT * FROM turnos WHERE funcionario_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, funcionarioId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int turnoId = resultSet.getInt("id");
+                    LocalDateTime inicio = resultSet.getTimestamp("inicio").toLocalDateTime();
+                    
+                    Timestamp fimTimestamp = resultSet.getTimestamp("fim");
+                    LocalDateTime fim = null;
+                    if (fimTimestamp != null) {
+                        fim = fimTimestamp.toLocalDateTime();
+                    }
+
+                    Turno turno = new Turno(turnoId, funcionarioId, inicio, fim);
+                    turnos.add(turno);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return turnos;
+    }
+
+    public void insertTurno(Turno turno) {
+        String query = "INSERT INTO turnos VALUES (?, ?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, turno.getId());
+            preparedStatement.setInt(2, turno.getIdFuncionario());
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(turno.getInicio()));
+            if (turno.getFim() != null) {
+                preparedStatement.setTimestamp(4, Timestamp.valueOf(turno.getFim()));
+            } else {
+                preparedStatement.setTimestamp(4, null);
+            }
+    
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTurno(Turno turno) {
+        String query = "UPDATE turnos SET id = ?, inicio = ?, fim = ?";
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, turno.getId());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(turno.getInicio()));
+            if (turno.getFim() != null) {
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(turno.getFim()));
+            } else {
+                preparedStatement.setTimestamp(3, null);
+            }
+    
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteTurno(int turnoID) {
+        String query = "DELETE FROM turnos WHERE id = ?";
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, turnoID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getNrTurnos() {
+        String query = "SELECT COUNT(*) FROM turnos";
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+    
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Turno getTurno(int turnoId) {
+        String query = "SELECT * FROM turnos WHERE id = ?";
+        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, turnoId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int funcionarioId = resultSet.getInt("funcionario_id");
+                    LocalDateTime inicio = resultSet.getTimestamp("inicio").toLocalDateTime();
+                    LocalDateTime fim = resultSet.getTimestamp("fim").toLocalDateTime();
+    
+                    return new Turno(id, funcionarioId, inicio, fim);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 
     public void insertVeiculo(Veiculo veiculo) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
@@ -509,7 +632,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
             preparedStatement.setInt(1, servico.getId());
             preparedStatement.setString(2, servico.getEstado());
-            preparedStatement.setTimestamp(3, new java.sql.Timestamp(servico.getDataHora().getTime()));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(servico.getDataHora()));
             preparedStatement.setInt(4, servico.getFuncionario().getId());
             preparedStatement.setInt(5, servico.getFatura().getNrFatura());
             preparedStatement.setString(6, servico.getVeiculo().getMatricula());
@@ -527,7 +650,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                 "UPDATE servicos SET estado = ?, dataHora = ?, funcionarioId = ?, faturaNr = ?, veiculoMatricula = ?, servicoTipo = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, servico.getEstado());
-            preparedStatement.setTimestamp(2, new java.sql.Timestamp(servico.getDataHora().getTime()));
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(servico.getDataHora()));
             preparedStatement.setInt(3, servico.getFuncionario().getId());
             preparedStatement.setInt(4, servico.getFatura().getNrFatura());
             preparedStatement.setString(5, servico.getVeiculo().getMatricula());
@@ -594,7 +717,7 @@ public class OficinaDAO implements OficinaDAOInterface{
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String estado = resultSet.getString("estado");
-                    Date dataHora = resultSet.getTimestamp("dataHora");
+                    LocalDateTime dataHora = resultSet.getTimestamp("dataHora").toLocalDateTime();
                     int funcionarioId = resultSet.getInt("funcionarioId");
                     int faturaNr = resultSet.getInt("faturaNr");
                     String veiculoMatricula = resultSet.getString("veiculoMatricula");
@@ -605,7 +728,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                     Fatura fatura = getFatura(faturaNr);
                     Veiculo veiculo = getVeiculo(veiculoMatricula);
                 
-                    return new Servico(id, estado, new Date(dataHora.getTime()), funcionario, fatura, veiculo, servicoTipo);
+                    return new Servico(id, estado, dataHora, funcionario, fatura, veiculo, servicoTipo);
                 }
             }
         } catch (SQLException e) {

@@ -1,6 +1,6 @@
 package src.business;
 
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,12 +11,13 @@ public class Funcionario {
     private String password;
     private int nrCartao;
     private String posto;
-    Time horaEntrada;
-    Time horaSaida;
+    private LocalTime horaEntrada;
+    private LocalTime horaSaida;
+    private List<Turno> livroDePonto;
     private List<String> competencias;
-    int administradorAdicionado;
+    private int administradorAdicionado;
 
-    public Funcionario(int id, String nome, String email, String password, int nrCartao, String posto, Time horaEntrada, Time horaSaida, List<String> competencias, int administradorAdicionado) {
+    public Funcionario(int id, String nome, String email, String password, int nrCartao, String posto, LocalTime horaEntrada, LocalTime horaSaida, List<Turno> livroDePonto, List<String> competencias, int administradorAdicionado) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -25,6 +26,7 @@ public class Funcionario {
         this.posto = posto;
         this.horaEntrada = horaEntrada;
         this.horaSaida = horaSaida;
+        this.livroDePonto = livroDePonto;
         this.competencias = competencias;
         this.administradorAdicionado = administradorAdicionado;
     }
@@ -77,20 +79,28 @@ public class Funcionario {
         this.posto = posto;
     }
 
-    public Time getHoraEntrada() {
+    public LocalTime getHoraEntrada() {
         return this.horaEntrada;
     }
 
-    public void setHoraEntrada(Time horaEntrada) {
+    public void setHoraEntrada(LocalTime horaEntrada) {
         this.horaEntrada = horaEntrada;
     }
 
-    public Time getHoraSaida() {
+    public LocalTime getHoraSaida() {
         return this.horaSaida;
     }
 
-    public void setHoraSaida(Time horaSaida) {
+    public void setHoraSaida(LocalTime horaSaida) {
         this.horaSaida = horaSaida;
+    }
+
+    public List<Turno> getLivroDePonto() {
+        return this.livroDePonto;
+    }
+
+    public void setLivroDePonto(List<Turno> livroDePonto) {
+        this.livroDePonto = livroDePonto;
     }
 
     public List<String> getCompetencias() {
@@ -117,12 +127,12 @@ public class Funcionario {
             return false;
         }
         Funcionario funcionario = (Funcionario) o;
-        return id == funcionario.id && Objects.equals(nome, funcionario.nome) && Objects.equals(email, funcionario.email) && Objects.equals(password, funcionario.password) && nrCartao == funcionario.nrCartao && Objects.equals(posto, funcionario.posto) && Objects.equals(horaEntrada, funcionario.horaEntrada) && Objects.equals(horaSaida, funcionario.horaSaida) && Objects.equals(competencias, funcionario.competencias) && administradorAdicionado == funcionario.administradorAdicionado;
+        return id == funcionario.id && Objects.equals(nome, funcionario.nome) && Objects.equals(email, funcionario.email) && Objects.equals(password, funcionario.password) && nrCartao == funcionario.nrCartao && Objects.equals(posto, funcionario.posto) && Objects.equals(horaEntrada, funcionario.horaEntrada) && Objects.equals(horaSaida, funcionario.horaSaida) && Objects.equals(livroDePonto, funcionario.livroDePonto) && Objects.equals(competencias, funcionario.competencias) && administradorAdicionado == funcionario.administradorAdicionado;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, competencias, administradorAdicionado);
+        return Objects.hash(id, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, livroDePonto, competencias, administradorAdicionado);
     }
 
     @Override
@@ -136,6 +146,7 @@ public class Funcionario {
             ", posto='" + getPosto() + "'" +
             ", horaEntrada='" + getHoraEntrada() + "'" +
             ", horaSaida='" + getHoraSaida() + "'" +
+            ", livroDePonto='" + getLivroDePonto() + "'" +
             ", competencias='" + getCompetencias() + "'" +
             ", administradorAdicionado='" + getAdministradorAdicionado() + "'" +
             "}";

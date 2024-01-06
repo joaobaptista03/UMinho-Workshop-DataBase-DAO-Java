@@ -1,23 +1,23 @@
 package src.business;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Servico {
     private int id;
     private String estado;
-    private Date dataHora;
+    private LocalDateTime dataHora;
     private Funcionario funcionario;
     private Fatura fatura;
-    private Veiculo Veiculo;
+    private Veiculo veiculo;
     private ServicoTipo servicoTipo;
 
-    public Servico(int id, String estado, Date dataHora, Funcionario funcionario, Fatura fatura, Veiculo veiculo, ServicoTipo servicoTipo) {
+    public Servico(int id, String estado, LocalDateTime dataHora, Funcionario funcionario, Fatura fatura, Veiculo veiculo, ServicoTipo servicoTipo) {
         this.id = id;
         this.estado = estado;
         this.dataHora = dataHora;
         this.funcionario = funcionario;
         this.fatura = fatura;
-        Veiculo = veiculo;
+        this.veiculo = veiculo;
         this.servicoTipo = servicoTipo;
     }
 
@@ -37,11 +37,11 @@ public class Servico {
         this.estado = estado;
     }
 
-    public Date getDataHora() {
+    public LocalDateTime getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(Date dataHora) {
+    public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
@@ -62,11 +62,11 @@ public class Servico {
     }
 
     public Veiculo getVeiculo() {
-        return Veiculo;
+        return veiculo;
     }
 
     public void setVeiculo(Veiculo veiculo) {
-        Veiculo = veiculo;
+        this.veiculo = veiculo;
     }
 
     public ServicoTipo getServicoTipo() {
@@ -85,7 +85,7 @@ public class Servico {
                 ", dataHora=" + dataHora +
                 ", funcionario=" + funcionario +
                 ", fatura=" + fatura +
-                ", Veiculo=" + Veiculo +
+                ", Veiculo=" + veiculo +
                 ", servicoTipo=" + servicoTipo +
                 '}';
     }

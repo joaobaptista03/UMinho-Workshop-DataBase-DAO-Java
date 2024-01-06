@@ -3,8 +3,8 @@ package src.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,18 +73,18 @@ public class AdministradorUI {
 
         System.out.print("Hora de Entrada do Funcionário (HH:MM): ");
         String horaEntradaStr = reader.readLine();
-        Time horaEntrada = Time.valueOf(LocalTime.parse(horaEntradaStr));
+        LocalTime horaEntrada = LocalTime.parse(horaEntradaStr);
 
         System.out.print("Hora de Saída do Funcionário (HH:MM): ");
         String horaSaidaStr = reader.readLine();
-        Time horaSaida = Time.valueOf(LocalTime.parse(horaSaidaStr));
+        LocalTime horaSaida = LocalTime.parse(horaSaidaStr);
 
         System.out.print("Competências do Funcionário (separadas por vírgula): ");
         String competencias = reader.readLine();
         List<String> competencias_list = Arrays.asList(competencias.split(","));
 
         int nrFuncionarios = oficinaDAO.getNrFuncionarios();
-        Funcionario novoFuncionario = new Funcionario(nrFuncionarios, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, competencias_list, administradorID);
+        Funcionario novoFuncionario = new Funcionario(nrFuncionarios, nome, email, password, nrCartao, posto, horaEntrada, horaSaida, new ArrayList<>(), competencias_list, administradorID);
         
         if (!oficinaDAO.insertFuncionario(novoFuncionario)) {
             System.err.println("Erro ao adicionar Funcionário!");

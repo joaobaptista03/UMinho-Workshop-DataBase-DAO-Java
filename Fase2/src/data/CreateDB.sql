@@ -41,6 +41,14 @@ CREATE TABLE IF NOT EXISTS funcionarios (
     administradorAdicionado INT
 );
 
+CREATE TABLE IF NOT EXISTS turnos (
+    id INT PRIMARY KEY,
+    funcionario_id INT,
+    inicio DATETIME,
+    fim DATETIME,
+    FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
+);
+
 CREATE TABLE IF NOT EXISTS servicos (
     id INT PRIMARY KEY,
     estado VARCHAR(50),

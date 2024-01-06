@@ -4,8 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import src.business.*;
 import src.data.OficinaDAO;
@@ -91,14 +92,28 @@ public class FuncionarioUI {
             e.printStackTrace();
         }
     }
+    public void darEntradaSaidaTurno() {
+        try {
+            List<Turno> turnos = oficinaDAO.getTurnosFuncionario(funcionarioID);
+            Turno ultimoTurno = turnos.isEmpty() ? null : turnos.get(turnos.size() - 1);
 
-    private void darEntradaSaidaTurno() {
-        // dar entrada e saída do turno
+            if (ultimoTurno != null && ultimoTurno.getFim() == null) {
+                ultimoTurno.setFim(LocalDateTime.now());
+                oficinaDAO.updateTurno(ultimoTurno);
+                System.out.println("Hora de saída registrada.");
+            } else {
+                Turno novoTurno = new Turno(0, funcionarioID, LocalDateTime.now(), null);
+                oficinaDAO.insertTurno(novoTurno);
+                System.out.println("Hora de entrada registrada.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void consultarHorario() {
         try {
-            System.out.print("Insira o ID do funcionário: ");
+            System.out.println("Insira o ID do funcionário: ");
     
             Funcionario funcionario = oficinaDAO.getFuncionario(funcionarioID);
     
@@ -120,6 +135,10 @@ public class FuncionarioUI {
             String estado = reader.readLine();
     
             Servico novoServico = oficinaDAO.getServico(servicoID);
+            if (novoServico == null) {
+                System.out.println("Serviço não encontrado.");
+                return;
+            }
             novoServico.setEstado(estado);
             oficinaDAO.updateServico(novoServico);
 
@@ -135,7 +154,7 @@ public class FuncionarioUI {
         int clienteID = Integer.parseInt(reader.readLine());
 
         System.out.println("Insira a data e hora do serviço (dd/mm/aaaa hh:mm): ");
-        Date dataHora = new SimpleDateFormat("dd/MM/YYYY HH:mm").parse(reader.readLine());
+        LocalDateTime dataHora = LocalDateTime.parse(reader.readLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
         System.out.println("Insira a matricula do carro: ");
         String matricula = reader.readLine();
