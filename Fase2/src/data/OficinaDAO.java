@@ -22,10 +22,15 @@ import java.util.stream.Collectors;
 import src.business.*;
 import src.business.Veiculo.TipoMotor;
 
-public class OficinaDAO implements OficinaDAOInterface{
+public class OficinaDAO implements OficinaDAOInterface {
+    static final String USERNAME = "root";
+    static final String PASSWORD = "password";
+    //private static final String DRIVER = "jdbc:mariadb";
+    private static final String DRIVER = "jdbc:mysql";
+    static final String URL = DRIVER+"://localhost:3306/";
 
     public OficinaDAO() throws IOException {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL, DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
             executeScript("src/data/CreateDB.sql", connection);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,7 +65,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }    
 
     public boolean insertCliente(Cliente cliente) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement checkIfExists = connection.prepareStatement("SELECT COUNT(*) FROM clientes WHERE email = ? OR nif = ? OR telefone = ?");
              PreparedStatement insertCliente = connection.prepareStatement("INSERT INTO clientes VALUES (?, ?, ?, ?, ?, ?, ?)")) {
     
@@ -93,7 +98,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
     
     public void updateCliente(Cliente cliente) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE clientes SET nome = ?, nif = ?, morada = ?, email = ?, password = ?, telefone = ? WHERE id = ?")) {
 
@@ -112,7 +117,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteCliente(int clienteId) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD)) {
     
             try (PreparedStatement deleteFaturas = connection.prepareStatement("DELETE FROM faturas WHERE clienteId = ?")) {
                 deleteFaturas.setInt(1, clienteId);
@@ -131,7 +136,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrClientes() {
         int nrClientes = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM clientes")) {
 
@@ -145,7 +150,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public int authenticateCliente(String username, String password) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM clientes WHERE email = ? AND password = ?")) {
     
             preparedStatement.setString(1, username);
@@ -163,7 +168,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public Cliente getCliente(int id) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM clientes WHERE id = ?")) {
 
             preparedStatement.setInt(1, id);
@@ -187,7 +192,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public boolean insertFuncionario(Funcionario funcionario) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement checkIfExists = connection.prepareStatement("SELECT COUNT(*) FROM funcionarios WHERE email = ? OR password = ? OR nrCartao = ?");
              PreparedStatement insertFuncionario = connection.prepareStatement("INSERT INTO funcionarios VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
     
@@ -226,7 +231,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void updateFuncionario(Funcionario funcionario) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE funcionarios SET nome = ?, nrCartao = ?, email = ?, password = ?, posto = ?, horaEntrada = ?, horaSaida = ?, competencias = ?, administradorAdicionado = ? WHERE id = ?")) {
 
@@ -252,7 +257,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteFuncionario(int funcionarioId) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD)) {
     
             try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE funcionarioId = ?")) {
                 deleteServicos.setInt(1, funcionarioId);
@@ -271,7 +276,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrFuncionarios() {
         int nrFuncionarios = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM funcionarios")) {
 
@@ -285,7 +290,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public int authenticateFuncionario(String username, String password) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM funcionarios WHERE email = ? AND password = ?")) {
     
             preparedStatement.setString(1, username);
@@ -303,7 +308,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public Funcionario getFuncionario(int id) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM funcionarios WHERE id = ?")) {
 
             preparedStatement.setInt(1, id);
@@ -337,7 +342,7 @@ public class OficinaDAO implements OficinaDAOInterface{
         List<FuncionarioTurno> turnos = new ArrayList<>();
         String query = "SELECT * FROM turnos WHERE funcionario_id = ?";
 
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, funcionarioId);
@@ -365,7 +370,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public void insertTurno(FuncionarioTurno turno) {
         String query = "INSERT INTO turnos VALUES (?, ?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
     
             preparedStatement.setInt(1, turno.getId());
@@ -385,7 +390,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public void updateTurno(FuncionarioTurno turno) {
         String query = "UPDATE turnos SET inicio = ?, fim = ?";
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
     
             preparedStatement.setTimestamp(1, Timestamp.valueOf(turno.getInicio()));
@@ -403,7 +408,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public void deleteTurno(int turnoID) {
         String query = "DELETE FROM turnos WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
     
             preparedStatement.setInt(1, turnoID);
@@ -415,7 +420,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrTurnos() {
         String query = "SELECT COUNT(*) FROM turnos";
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
     
@@ -430,7 +435,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public FuncionarioTurno getTurno(int turnoId) {
         String query = "SELECT * FROM turnos WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
     
             preparedStatement.setInt(1, turnoId);
@@ -452,7 +457,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     
 
     public void insertVeiculo(Veiculo veiculo) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO veiculos VALUES (?, ?, ?, ?, ?)")) {
 
             preparedStatement.setString(1, veiculo.getMatricula());
@@ -468,7 +473,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void updateVeiculo(Veiculo veiculo) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE veiculos SET marca = ?, modelo = ?, tipo_motor = ?, informacoes = ? WHERE matricula = ?")) {
 
@@ -485,7 +490,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteVeiculo(String matricula) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD)) {
 
             try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE veiculoMatricula = ?")) {
                 deleteServicos.setString(1, matricula);
@@ -504,7 +509,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrVeiculos() {
         int nrVeiculos = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM veiculos")) {
 
@@ -518,7 +523,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public Veiculo getVeiculo(String matricula) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM veiculos WHERE matricula = ?")) {
     
             preparedStatement.setString(1, matricula);
@@ -541,7 +546,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void insertFatura(Fatura fatura) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO faturas VALUES (?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, fatura.getNrFatura());
@@ -556,7 +561,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void updateFatura(Fatura fatura) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE faturas SET clienteId = ?, preco = ?, pago = ? WHERE nrFatura = ?")) {
 
             preparedStatement.setInt(1, fatura.getCliente().getId());
@@ -571,7 +576,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteFatura(int nrFatura) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD)) {
 
             try (PreparedStatement deleteServicos = connection.prepareStatement("DELETE FROM servicos WHERE faturaNr = ?")) {
                 deleteServicos.setInt(1, nrFatura);
@@ -590,7 +595,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrFaturas() {
         int nrFaturas = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM faturas")) {
 
@@ -604,7 +609,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public Fatura getFatura(int nrFatura) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM faturas WHERE nrFatura = ?")) {
     
             preparedStatement.setInt(1, nrFatura);
@@ -627,7 +632,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
     
     public void insertServico(Servico servico) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO servicos VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, servico.getId());
@@ -645,7 +650,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void updateServico(Servico servico) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE servicos SET estado = ?, dataHora = ?, funcionarioId = ?, faturaNr = ?, veiculoMatricula = ?, servicoTipo = ? WHERE id = ?")) {
 
@@ -664,7 +669,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteServico(int servicoId) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM servicos WHERE id = ?")) {
 
             preparedStatement.setInt(1, servicoId);
@@ -677,7 +682,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrServicos() {
         int nrServicos = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM servicos")) {
 
@@ -692,7 +697,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public String consultarEstadoServico(int servicoId) {
         String estadoServico = null;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT estado FROM servicos WHERE id = ?")) {
     
             preparedStatement.setInt(1, servicoId);
@@ -709,7 +714,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }    
 
     public Servico getServico(int id) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM servicos WHERE id = ?")) {
     
             preparedStatement.setInt(1, id);
@@ -738,7 +743,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void insertAdministrador(Administrator administrator) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "INSERT INTO administradores VALUES (?, ?, ?, ?)")) {
 
@@ -754,7 +759,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void updateAdministrador(Administrator administrator) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE administradores SET nome = ?, email = ?, password = ? WHERE id = ?")) {
 
@@ -770,7 +775,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public void deleteAdministrador(int administradorID) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "DELETE FROM administradores WHERE id = ?")) {
 
@@ -784,7 +789,7 @@ public class OficinaDAO implements OficinaDAOInterface{
 
     public int getNrAdministradores() {
         int nrAdministradores = 0;
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM administradores")) {
 
@@ -798,7 +803,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public int authenticateAdministrator(String username, String password) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM administradores WHERE email = ? AND password = ?")) {
     
             preparedStatement.setString(1, username);
@@ -816,7 +821,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     }
 
     public Administrator getAdministrador(int id) {
-        try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM administradores WHERE id = ?")) {
     
             preparedStatement.setInt(1, id);
