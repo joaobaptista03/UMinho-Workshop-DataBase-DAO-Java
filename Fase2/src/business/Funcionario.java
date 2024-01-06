@@ -13,11 +13,11 @@ public class Funcionario {
     private String posto;
     private LocalTime horaEntrada;
     private LocalTime horaSaida;
-    private List<Turno> livroDePonto;
+    private List<FuncionarioTurno> livroDePonto;
     private List<String> competencias;
     private int administradorAdicionado;
 
-    public Funcionario(int id, String nome, String email, String password, int nrCartao, String posto, LocalTime horaEntrada, LocalTime horaSaida, List<Turno> livroDePonto, List<String> competencias, int administradorAdicionado) {
+    public Funcionario(int id, String nome, String email, String password, int nrCartao, String posto, LocalTime horaEntrada, LocalTime horaSaida, List<FuncionarioTurno> livroDePonto, List<String> competencias, int administradorAdicionado) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -95,11 +95,11 @@ public class Funcionario {
         this.horaSaida = horaSaida;
     }
 
-    public List<Turno> getLivroDePonto() {
+    public List<FuncionarioTurno> getLivroDePonto() {
         return this.livroDePonto;
     }
 
-    public void setLivroDePonto(List<Turno> livroDePonto) {
+    public void setLivroDePonto(List<FuncionarioTurno> livroDePonto) {
         this.livroDePonto = livroDePonto;
     }
 

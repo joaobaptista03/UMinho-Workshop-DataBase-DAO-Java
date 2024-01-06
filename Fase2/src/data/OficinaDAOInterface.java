@@ -18,13 +18,13 @@ public interface OficinaDAOInterface {
     public int getNrFuncionarios();
     public int authenticateFuncionario(String username, String password);
     public Funcionario getFuncionario(int funcionarioId);
-    public List<Turno> getTurnosFuncionario(int funcionarioId);
+    public List<FuncionarioTurno> getTurnosFuncionario(int funcionarioId);
 
-    public void insertTurno(Turno turno);
-    public void updateTurno(Turno turno);
+    public void insertTurno(FuncionarioTurno turno);
+    public void updateTurno(FuncionarioTurno turno);
     public void deleteTurno(int turnoID);
     public int getNrTurnos();
-    public Turno getTurno(int turnoId);
+    public FuncionarioTurno getTurno(int turnoId);
 
     public void insertVeiculo(Veiculo veiculo);
     public void updateVeiculo(Veiculo veiculo);

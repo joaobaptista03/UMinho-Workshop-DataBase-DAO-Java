@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import src.business.*;
+import src.business.Veiculo.TipoMotor;
 
 public class OficinaDAO implements OficinaDAOInterface{
 
@@ -304,7 +305,7 @@ public class OficinaDAO implements OficinaDAOInterface{
     public Funcionario getFuncionario(int id) {
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM funcionarios WHERE id = ?")) {
-    
+
             preparedStatement.setInt(1, id);
     
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -316,7 +317,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                     String posto = resultSet.getString("posto");
                     LocalTime horaEntrada = resultSet.getTime("horaEntrada").toLocalTime();
                     LocalTime horaSaida = resultSet.getTime("horaSaida").toLocalTime();
-                    List<Turno> turnos = this.getTurnosFuncionario(id);
+                    List<FuncionarioTurno> turnos = this.getTurnosFuncionario(id);
                     String competenciasString = resultSet.getString("competencias");
 
                     List<String> competencias = Arrays.asList(competenciasString.split(","));
@@ -332,8 +333,8 @@ public class OficinaDAO implements OficinaDAOInterface{
         return null;
     }
 
-    public List<Turno> getTurnosFuncionario(int funcionarioId) {
-        List<Turno> turnos = new ArrayList<>();
+    public List<FuncionarioTurno> getTurnosFuncionario(int funcionarioId) {
+        List<FuncionarioTurno> turnos = new ArrayList<>();
         String query = "SELECT * FROM turnos WHERE funcionario_id = ?";
 
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
@@ -352,7 +353,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                         fim = fimTimestamp.toLocalDateTime();
                     }
 
-                    Turno turno = new Turno(turnoId, funcionarioId, inicio, fim);
+                    FuncionarioTurno turno = new FuncionarioTurno(turnoId, funcionarioId, inicio, fim);
                     turnos.add(turno);
                 }
             }
@@ -362,7 +363,7 @@ public class OficinaDAO implements OficinaDAOInterface{
         return turnos;
     }
 
-    public void insertTurno(Turno turno) {
+    public void insertTurno(FuncionarioTurno turno) {
         String query = "INSERT INTO turnos VALUES (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -382,17 +383,16 @@ public class OficinaDAO implements OficinaDAOInterface{
         }
     }
 
-    public void updateTurno(Turno turno) {
-        String query = "UPDATE turnos SET id = ?, inicio = ?, fim = ?";
+    public void updateTurno(FuncionarioTurno turno) {
+        String query = "UPDATE turnos SET inicio = ?, fim = ?";
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
     
-            preparedStatement.setInt(1, turno.getId());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(turno.getInicio()));
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(turno.getInicio()));
             if (turno.getFim() != null) {
-                preparedStatement.setTimestamp(3, Timestamp.valueOf(turno.getFim()));
+                preparedStatement.setTimestamp(2, Timestamp.valueOf(turno.getFim()));
             } else {
-                preparedStatement.setTimestamp(3, null);
+                preparedStatement.setTimestamp(2, null);
             }
     
             preparedStatement.executeUpdate();
@@ -428,7 +428,7 @@ public class OficinaDAO implements OficinaDAOInterface{
         return 0;
     }
 
-    public Turno getTurno(int turnoId) {
+    public FuncionarioTurno getTurno(int turnoId) {
         String query = "SELECT * FROM turnos WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DAOConfig.URL + "OficinaDB", DAOConfig.USERNAME, DAOConfig.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -441,7 +441,7 @@ public class OficinaDAO implements OficinaDAOInterface{
                     LocalDateTime inicio = resultSet.getTimestamp("inicio").toLocalDateTime();
                     LocalDateTime fim = resultSet.getTimestamp("fim").toLocalDateTime();
     
-                    return new Turno(id, funcionarioId, inicio, fim);
+                    return new FuncionarioTurno(id, funcionarioId, inicio, fim);
                 }
             }
         } catch (SQLException e) {

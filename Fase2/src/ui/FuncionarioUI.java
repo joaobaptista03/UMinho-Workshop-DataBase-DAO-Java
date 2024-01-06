@@ -94,15 +94,15 @@ public class FuncionarioUI {
     }
     public void darEntradaSaidaTurno() {
         try {
-            List<Turno> turnos = oficinaDAO.getTurnosFuncionario(funcionarioID);
-            Turno ultimoTurno = turnos.isEmpty() ? null : turnos.get(turnos.size() - 1);
+            List<FuncionarioTurno> turnos = oficinaDAO.getTurnosFuncionario(funcionarioID);
+            FuncionarioTurno ultimoTurno = turnos.isEmpty() ? null : turnos.get(turnos.size() - 1);
 
             if (ultimoTurno != null && ultimoTurno.getFim() == null) {
                 ultimoTurno.setFim(LocalDateTime.now());
                 oficinaDAO.updateTurno(ultimoTurno);
                 System.out.println("Hora de saída registrada.");
             } else {
-                Turno novoTurno = new Turno(0, funcionarioID, LocalDateTime.now(), null);
+                FuncionarioTurno novoTurno = new FuncionarioTurno(0, funcionarioID, LocalDateTime.now(), null);
                 oficinaDAO.insertTurno(novoTurno);
                 System.out.println("Hora de entrada registrada.");
             }

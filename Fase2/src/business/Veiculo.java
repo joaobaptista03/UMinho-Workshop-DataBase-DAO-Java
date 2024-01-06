@@ -1,6 +1,11 @@
 package src.business;
 
 public class Veiculo {
+
+    public enum TipoMotor {
+        DIESEL, GASOLINA, ELECTRICO, HIBRIDOGASOLINA, HIBRIDODIESEL
+    }
+    
     String matricula;
     String marca;
     String modelo;
