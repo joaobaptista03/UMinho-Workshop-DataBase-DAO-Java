@@ -4,14 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import src.data.OficinaDAO;
+import src.data.OficinaDAOFacade;
 
 public class ClienteUI {
 
-    private OficinaDAO oficinaDAO;
+    private OficinaDAOFacade oficinaDAO;
     private BufferedReader reader;
 
-    public ClienteUI(OficinaDAO oficinaDAO) {
+    public ClienteUI(OficinaDAOFacade oficinaDAO) {
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }

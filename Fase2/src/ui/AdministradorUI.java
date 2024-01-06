@@ -9,15 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import src.business.*;
-import src.data.OficinaDAO;
+import src.data.OficinaDAOFacade;
 
 public class AdministradorUI {
     
     private int administradorID;
-    private OficinaDAO oficinaDAO;
+    private OficinaDAOFacade oficinaDAO;
     private BufferedReader reader;
 
-    public AdministradorUI(OficinaDAO oficinaDAO, int administradorID) {
+    public AdministradorUI(OficinaDAOFacade oficinaDAO, int administradorID) {
         this.administradorID = administradorID;
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -51,7 +51,7 @@ public class AdministradorUI {
         }
     }
 
-    private boolean adicionarFuncionario(OficinaDAO oficinaDAO) throws IOException {
+    private boolean adicionarFuncionario(OficinaDAOFacade oficinaDAO) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\nAdicionar Funcionário:");

@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 import src.business.*;
 import src.business.Veiculo.TipoMotor;
 
-public class OficinaDAO implements OficinaDAOInterface {
+public class OficinaDAOImpl implements OficinaDAOFacade {
     static final String USERNAME = "root";
     static final String PASSWORD = "password";
     //private static final String DRIVER = "jdbc:mariadb";
     private static final String DRIVER = "jdbc:mysql";
     static final String URL = DRIVER+"://localhost:3306/";
 
-    public OficinaDAO() throws IOException {
+    public OficinaDAOImpl() throws IOException {
         try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
             executeScript("src/data/CreateDB.sql", connection);
         } catch (SQLException e) {

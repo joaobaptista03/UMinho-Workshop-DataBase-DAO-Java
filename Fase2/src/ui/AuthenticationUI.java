@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import src.business.Cliente;
-import src.data.OficinaDAO;
+import src.data.OficinaDAOFacade;
 
 public class AuthenticationUI {
     public static class AuthTypeID {
@@ -18,7 +18,7 @@ public class AuthenticationUI {
         }
     }
 
-    public static AuthTypeID authenticate(OficinaDAO oficinaDAO) throws NumberFormatException, IOException {
+    public static AuthTypeID authenticate(OficinaDAOFacade oficinaDAO) throws NumberFormatException, IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("Choose your role: (1) Cliente, (2) Funcionário, (3) Administrator");

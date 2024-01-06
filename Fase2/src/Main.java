@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import src.ui.*;
-import src.data.OficinaDAO;
+import src.data.OficinaDAOFacade;
+import src.data.OficinaDAOImpl;
 
 public class Main {
     public static void main(String[] args) throws ParseException {
         try {
-            OficinaDAO oficinaDAO = new OficinaDAO();
+            OficinaDAOFacade oficinaDAO = new OficinaDAOImpl();
             AuthenticationUI.AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
             if (auth == null) {

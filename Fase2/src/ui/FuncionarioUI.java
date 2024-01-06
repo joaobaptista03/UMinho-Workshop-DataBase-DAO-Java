@@ -9,15 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import src.business.*;
-import src.data.OficinaDAO;
+import src.data.OficinaDAOFacade;
 
 public class FuncionarioUI {
 
     private int funcionarioID;
-    private OficinaDAO oficinaDAO;
+    private OficinaDAOFacade oficinaDAO;
     private BufferedReader reader;
 
-    public FuncionarioUI(OficinaDAO oficinaDAO, int funcionarioID) {
+    public FuncionarioUI(OficinaDAOFacade oficinaDAO, int funcionarioID) {
         this.funcionarioID = funcionarioID;
         this.oficinaDAO = oficinaDAO;
         this.reader = new BufferedReader(new InputStreamReader(System.in));

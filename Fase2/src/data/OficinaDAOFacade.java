@@ -4,7 +4,7 @@ import java.util.List;
 
 import src.business.*;
 
-public interface OficinaDAOInterface {
+public interface OficinaDAOFacade {
     public boolean insertCliente(Cliente cliente);
     public void updateCliente(Cliente cliente);
     public void deleteCliente(int clienteId);
