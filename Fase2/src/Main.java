@@ -16,7 +16,7 @@ public class Main {
 
             oficinaDAO.insertFuncionario(new Funcionario(0, "João", "mail", "pass", 123, "posto", LocalTime.parse("18:00"), LocalTime.parse("18:00"), new ArrayList<>(), new ArrayList<>(), 0));
 
-            AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
+            AuthenticationUI.AuthTypeID auth = AuthenticationUI.authenticate(oficinaDAO);
 
             if (auth == null) {
                 System.out.println("Autenticação falhada. A sair...");

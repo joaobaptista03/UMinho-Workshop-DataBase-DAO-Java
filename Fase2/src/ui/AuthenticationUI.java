@@ -8,6 +8,16 @@ import src.business.Cliente;
 import src.data.OficinaDAO;
 
 public class AuthenticationUI {
+    public static class AuthTypeID {
+        public int authType;
+        public int id;
+    
+        public AuthTypeID(int authType, int id) {
+            this.authType = authType;
+            this.id = id;
+        }
+    }
+
     public static AuthTypeID authenticate(OficinaDAO oficinaDAO) throws NumberFormatException, IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
