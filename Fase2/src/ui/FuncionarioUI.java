@@ -32,12 +32,13 @@ public class FuncionarioUI {
             do {
                 System.out.println("\nMenu do Funcionário:");
                 System.out.println("1. Consultar Informações de um Carro");
-                System.out.println("2. Dar Entrada e Saída do Turno");
-                System.out.println("3. Consultar Horário");
-                System.out.println("4. Alterar Estado do Serviço");
-                System.out.println("5. Agendar Serviço");
-                System.out.println("6. Registar Pagamento do Serviço");
-                System.out.println("7. Sair.");
+                System.out.println("2. Consultar Informações de um Serviço");
+                System.out.println("3. Dar Entrada e Saída do Turno");
+                System.out.println("4. Consultar Horário");
+                System.out.println("5. Alterar Estado do Serviço");
+                System.out.println("6. Agendar Serviço");
+                System.out.println("7. Registar Pagamento do Serviço");
+                System.out.println("8. Sair.");
                 System.out.print("Escolha uma opção: ");
 
                 choice = Integer.parseInt(reader.readLine());
@@ -49,21 +50,24 @@ public class FuncionarioUI {
                         consultarInformacoesCarro();
                         break;
                     case 2:
-                        darEntradaSaidaTurno();
+                        consultarServico();
                         break;
                     case 3:
-                        consultarHorario();
+                        darEntradaSaidaTurno();
                         break;
                     case 4:
-                        alterarEstadoServico();
+                        consultarHorario();
                         break;
                     case 5:
-                        agendarServico();
+                        alterarEstadoServico();
                         break;
                     case 6:
-                        registarPagamentoServico();
+                        agendarServico();
                         break;
                     case 7:
+                        registarPagamentoServico();
+                        break;
+                    case 8:
                         System.out.println("A sair do Menu Funcionário...");
                         break;
                     default:
@@ -96,7 +100,25 @@ public class FuncionarioUI {
             e.printStackTrace();
         }
     }
-    public void darEntradaSaidaTurno() {
+
+    private void consultarServico() throws NumberFormatException, IOException {
+        System.out.print("Insira o ID do serviço: ");
+        int servicoID = Integer.parseInt(reader.readLine());
+
+        Servico servico = oficinaDAO.getServico(servicoID);
+        if (servico != null) {
+            System.out.println("Informações do Serviço:");
+            System.out.println("Estado: " + servico.getEstado());
+            System.out.println("Data e Hora: " + servico.getDataHora());
+            System.out.println("Funcionário: " + servico.getFuncionario().getNome());
+            System.out.println("Fatura: " + servico.getFatura().getNrFatura());
+            System.out.println("Veículo: " + servico.getVeiculo().getMatricula());
+            System.out.println("Tipo de Serviço: " + servico.getServicoTipo());
+        }
+        else System.out.println("Serviço não encontrado.");
+    }
+
+    private void darEntradaSaidaTurno() {
         try {
             List<FuncionarioTurno> turnos = oficinaDAO.getTurnosFuncionario(funcionarioID);
             FuncionarioTurno ultimoTurno = turnos.isEmpty() ? null : turnos.get(turnos.size() - 1);
@@ -173,11 +195,11 @@ public class FuncionarioUI {
             System.out.println("Não existe nenhum serviço marcado para estas datas.\n");
         }
 
-        System.out.println("Insira o ID do cliente: ");
-        int clienteID = Integer.parseInt(reader.readLine());
-
         System.out.println("Insira a data e hora do serviço (dd/mm/aaaa hh:mm): ");
         LocalDateTime dataHora = LocalDateTime.parse(reader.readLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        System.out.println("Insira o ID do cliente: ");
+        int clienteID = Integer.parseInt(reader.readLine());
 
         System.out.println("Insira a matricula do carro: ");
         String matricula = reader.readLine();
