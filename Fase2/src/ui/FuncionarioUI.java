@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import src.business.*;
+import src.business.Servico.ServicoEstado;
 import src.data.OficinaDAOFacade;
 
 public class FuncionarioUI {
@@ -138,8 +139,9 @@ public class FuncionarioUI {
             System.out.print("Insira o ID do serviço: ");
             int servicoID = Integer.parseInt(reader.readLine());
 
-            System.out.print("Insira o novo estado do serviço: ");
-            String estado = reader.readLine();
+            System.out.print("Insira o novo estado do serviço (Agendado / EmRealizacao / Realizado / Pago): ");
+            String estadoString = reader.readLine();
+            Servico.ServicoEstado estado = Servico.ServicoEstado.valueOf(estadoString);
     
             Servico novoServico = oficinaDAO.getServico(servicoID);
             if (novoServico == null) {
@@ -189,7 +191,7 @@ public class FuncionarioUI {
         Fatura temp = new Fatura(oficinaDAO.getNrFaturas(), oficinaDAO.getCliente(clienteID), preco, false);
         oficinaDAO.insertFatura(temp);
 
-        Servico servico = new Servico(nrServicos, "Agendado", dataHora, oficinaDAO.getFuncionario(funcionarioID), temp, oficinaDAO.getVeiculo(matricula), Servico.ServicoTipo.valueOf(tipoServico));
+        Servico servico = new Servico(nrServicos, ServicoEstado.Agendado, dataHora, oficinaDAO.getFuncionario(funcionarioID), temp, oficinaDAO.getVeiculo(matricula), Servico.ServicoTipo.valueOf(tipoServico));
         oficinaDAO.insertServico(servico);
     }
 
@@ -197,9 +199,13 @@ public class FuncionarioUI {
         System.out.println("Insira o ID do serviço: ");
         int servicoID = Integer.parseInt(reader.readLine());
 
-        Fatura f = oficinaDAO.getServico(servicoID).getFatura();
+        Servico s = oficinaDAO.getServico(servicoID);
+        s.setEstado(ServicoEstado.Pago);
+
+        Fatura f = s.getFatura();
         f.setPago(true);
 
         oficinaDAO.updateFatura(f);
+        oficinaDAO.updateServico(s);
     }
 }

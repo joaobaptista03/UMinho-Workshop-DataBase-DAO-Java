@@ -639,7 +639,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO servicos VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setInt(1, servico.getId());
-            preparedStatement.setString(2, servico.getEstado());
+            preparedStatement.setString(2, servico.getEstado().name());
             preparedStatement.setTimestamp(3, Timestamp.valueOf(servico.getDataHora()));
             preparedStatement.setInt(4, servico.getFuncionario().getId());
             preparedStatement.setInt(5, servico.getFatura().getNrFatura());
@@ -657,7 +657,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE servicos SET estado = ?, dataHora = ?, funcionarioId = ?, faturaNr = ?, veiculoMatricula = ?, servicoTipo = ? WHERE id = ?")) {
 
-            preparedStatement.setString(1, servico.getEstado());
+            preparedStatement.setString(1, servico.getEstado().name());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(servico.getDataHora()));
             preparedStatement.setInt(3, servico.getFuncionario().getId());
             preparedStatement.setInt(4, servico.getFatura().getNrFatura());
@@ -724,11 +724,12 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
     
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String estado = resultSet.getString("estado");
+                    Servico.ServicoEstado estado = Servico.ServicoEstado.valueOf(resultSet.getString("estado"));
                     LocalDateTime dataHora = resultSet.getTimestamp("dataHora").toLocalDateTime();
                     int funcionarioId = resultSet.getInt("funcionarioId");
                     int faturaNr = resultSet.getInt("faturaNr");
                     String veiculoMatricula = resultSet.getString("veiculoMatricula");
+
                     String servicoTipoString = resultSet.getString("servicoTipo");
                     Servico.ServicoTipo servicoTipo = Servico.ServicoTipo.valueOf(servicoTipoString);
                 
@@ -763,7 +764,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
                     Fatura fatura = getFatura(resultSet.getInt("faturaNr"));
                     Veiculo veiculo = getVeiculo(resultSet.getString("veiculoMatricula"));
                     ServicoTipo tipo = ServicoTipo.valueOf(resultSet.getString("servicoTipo"));
-                    String estado = resultSet.getString("estado");
+                    Servico.ServicoEstado estado = Servico.ServicoEstado.valueOf(resultSet.getString("estado"));
                     Servico servico = new Servico(id, estado, dataHora, funcionario, fatura, veiculo, tipo);
 
                     servicos.add(servico);

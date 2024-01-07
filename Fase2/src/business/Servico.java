@@ -37,16 +37,23 @@ public class Servico {
         SubstituicaoBateria,
         AvaliacaoDesempenhoBateria
     }
+
+    public enum ServicoEstado {
+        Agendado,
+        EmRealizacao,
+        Realizado,
+        Pago
+    }
     
     private int id;
-    private String estado;
+    private ServicoEstado estado;
     private LocalDateTime dataHora;
     private Funcionario funcionario;
     private Fatura fatura;
     private Veiculo veiculo;
     private ServicoTipo servicoTipo;
 
-    public Servico(int id, String estado, LocalDateTime dataHora, Funcionario funcionario, Fatura fatura, Veiculo veiculo, ServicoTipo servicoTipo) {
+    public Servico(int id, ServicoEstado estado, LocalDateTime dataHora, Funcionario funcionario, Fatura fatura, Veiculo veiculo, ServicoTipo servicoTipo) {
         this.id = id;
         this.estado = estado;
         this.dataHora = dataHora;
@@ -64,11 +71,11 @@ public class Servico {
         this.id = id;
     }
 
-    public String getEstado() {
+    public ServicoEstado getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(ServicoEstado estado) {
         this.estado = estado;
     }
 
