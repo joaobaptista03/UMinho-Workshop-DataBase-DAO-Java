@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import src.business.*;
+import src.business.Servico.ServicoTipo;
 import src.business.Veiculo.TipoMotor;
 
 public class OficinaDAOImpl implements OficinaDAOFacade {
@@ -740,6 +742,37 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Servico> servicosEntreDatas(LocalDate dataInicio, LocalDate dataFim) {
+        List<Servico> servicos = new ArrayList<>();
+        String query = "SELECT * FROM servicos WHERE dataHora >= ? AND dataHora <= ?";
+
+        try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(dataInicio.atStartOfDay()));
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(dataFim.atTime(23, 59, 59)));
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    LocalDateTime dataHora = resultSet.getTimestamp("dataHora").toLocalDateTime();
+                    Funcionario funcionario = getFuncionario(resultSet.getInt("funcionarioId"));
+                    Fatura fatura = getFatura(resultSet.getInt("faturaNr"));
+                    Veiculo veiculo = getVeiculo(resultSet.getString("veiculoMatricula"));
+                    ServicoTipo tipo = ServicoTipo.valueOf(resultSet.getString("servicoTipo"));
+                    String estado = resultSet.getString("estado");
+                    Servico servico = new Servico(id, estado, dataHora, funcionario, fatura, veiculo, tipo);
+
+                    servicos.add(servico);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return servicos;
     }
 
     public void insertAdministrador(Administrator administrator) {

@@ -1,5 +1,6 @@
 package src.data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import src.business.*;
@@ -44,6 +45,7 @@ public interface OficinaDAOFacade {
     public int getNrServicos();
     public String consultarEstadoServico(int servicoId);
     public Servico getServico(int servicoId);
+    public List<Servico> servicosEntreDatas(LocalDate dataInicio, LocalDate dataFim);
     
     public void insertAdministrador(Administrator administrator);
     public void updateAdministrador(Administrator administrator);

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -39,6 +40,8 @@ public class FuncionarioUI {
                 System.out.print("Escolha uma opção: ");
 
                 choice = Integer.parseInt(reader.readLine());
+
+                System.out.println();
 
                 switch (choice) {
                     case 1:
@@ -102,7 +105,7 @@ public class FuncionarioUI {
                 oficinaDAO.updateTurno(ultimoTurno);
                 System.out.println("Hora de saída registrada.");
             } else {
-                FuncionarioTurno novoTurno = new FuncionarioTurno(0, funcionarioID, LocalDateTime.now(), null);
+                FuncionarioTurno novoTurno = new FuncionarioTurno(oficinaDAO.getNrTurnos(), funcionarioID, LocalDateTime.now(), null);
                 oficinaDAO.insertTurno(novoTurno);
                 System.out.println("Hora de entrada registrada.");
             }
@@ -149,6 +152,20 @@ public class FuncionarioUI {
 
     private void agendarServico() throws IOException, ParseException {
         int nrServicos = oficinaDAO.getNrServicos();
+
+        System.out.println("Terá de indicar duas datas para marcar o serviço entre elas.");
+        System.out.println("Insira a primeira data e hora do serviço (dd/mm/aaaa): ");
+        LocalDate data1 = LocalDate.parse(reader.readLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        System.out.println("Insira a segunda data e hora do serviço (dd/mm/aaaa): ");
+        LocalDate data2 = LocalDate.parse(reader.readLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        List<Servico> servicos = oficinaDAO.servicosEntreDatas(data1, data2);
+        for (Servico servico : servicos) {
+            System.out.println("Serviço " + servico.getId() + " - " + servico.getEstado() + " - " + servico.getDataHora() + " - Funcionário " + servico.getFuncionario().getId());
+        }
+        if (servicos.isEmpty()) {
+            System.out.println("Não existe nenhum serviço marcado para estas datas.\n");
+        }
 
         System.out.println("Insira o ID do cliente: ");
         int clienteID = Integer.parseInt(reader.readLine());
