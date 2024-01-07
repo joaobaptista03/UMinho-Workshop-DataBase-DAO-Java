@@ -33,6 +33,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
 
     public OficinaDAOImpl() throws IOException {
         try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            // Para um cenário de teste em apresentação, cria-se uma nova base de dados com este script SQL.
             executeScript("src/data/CreateDB.sql", connection);
         } catch (SQLException e) {
             e.printStackTrace();
