@@ -116,13 +116,17 @@ public class FuncionarioUI {
 
     private void consultarHorario() {
         try {
-            System.out.println("Insira o ID do funcionário: ");
-    
             Funcionario funcionario = oficinaDAO.getFuncionario(funcionarioID);
     
             System.out.println("Horário de trabalho do funcionário " + funcionario.getNome() + ":");
             System.out.println("Hora de entrada: " + funcionario.getHoraEntrada());
             System.out.println("Hora de saída: " + funcionario.getHoraSaida());
+
+            System.out.println("Os seus Serviços no próximo mês:");
+            List<Servico> servicos = oficinaDAO.servicosEntreDatas(LocalDate.now(), LocalDate.now().plusMonths(1));
+            for (Servico servico : servicos)
+                if (servico.getFuncionario().getId() == funcionarioID)
+                    System.out.println("Serviço " + servico.getId() + " - " + servico.getEstado() + " - " + servico.getDataHora());
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
