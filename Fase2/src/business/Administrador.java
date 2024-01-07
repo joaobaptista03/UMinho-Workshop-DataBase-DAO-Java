@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import lib.BCrypt;
 
-public class Administrator {
+public class Administrador {
     private int id;
     private String nome;
     private String email;
     private String password;;
 
-    public Administrator(int id, String nome, String email, String password) {
+    public Administrador(int id, String nome, String email, String password) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -64,11 +64,11 @@ public class Administrator {
     public boolean equals(Object o) {
         if (o == this)
             return true;
-        if (!(o instanceof Administrator)) {
+        if (!(o instanceof Administrador)) {
             return false;
         }
-        Administrator administrator = (Administrator) o;
-        return id == administrator.id && Objects.equals(nome, administrator.nome) && Objects.equals(email, administrator.email) && Objects.equals(password, administrator.password);
+        Administrador Administrador = (Administrador) o;
+        return id == Administrador.id && Objects.equals(nome, Administrador.nome) && Objects.equals(email, Administrador.email) && Objects.equals(password, Administrador.password);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class AuthenticationUI {
                     System.out.println("Digita a tua password:");
                     adminPassword = reader.readLine();
 
-                    adminID = oficinaDAO.authenticateAdministrator(adminUsername, adminPassword);
+                    adminID = oficinaDAO.authenticateAdministrador(adminUsername, adminPassword);
                     if (adminID != -1) adminAuthenticated = true;
                 } while (!adminAuthenticated);
 

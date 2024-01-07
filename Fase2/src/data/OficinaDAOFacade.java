@@ -47,10 +47,10 @@ public interface OficinaDAOFacade {
     public Servico getServico(int servicoId);
     public List<Servico> servicosEntreDatas(LocalDate dataInicio, LocalDate dataFim);
     
-    public void insertAdministrador(Administrator administrator);
-    public void updateAdministrador(Administrator administrator);
+    public void insertAdministrador(Administrador Administrador);
+    public void updateAdministrador(Administrador Administrador);
     public void deleteAdministrador(int administradorID);
     public int getNrAdministradores();
-    public int authenticateAdministrator(String username, String password);
-    public Administrator getAdministrador(int administradorId);
+    public int authenticateAdministrador(String username, String password);
+    public Administrador getAdministrador(int administradorId);
 }

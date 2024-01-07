@@ -777,15 +777,15 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
         return servicos;
     }
 
-    public void insertAdministrador(Administrator administrator) {
+    public void insertAdministrador(Administrador administrador) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "INSERT INTO administradores VALUES (?, ?, ?, ?)")) {
 
-            preparedStatement.setInt(1, administrator.getId());
-            preparedStatement.setString(2, administrator.getNome());
-            preparedStatement.setString(3, administrator.getEmail());
-            preparedStatement.setString(4, administrator.getPassword());
+            preparedStatement.setInt(1, administrador.getId());
+            preparedStatement.setString(2, administrador.getNome());
+            preparedStatement.setString(3, administrador.getEmail());
+            preparedStatement.setString(4, administrador.getPassword());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -793,15 +793,15 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
         }
     }
 
-    public void updateAdministrador(Administrator administrator) {
+    public void updateAdministrador(Administrador administrador) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                 "UPDATE administradores SET nome = ?, email = ?, password = ? WHERE id = ?")) {
 
-            preparedStatement.setString(1, administrator.getNome());
-            preparedStatement.setString(2, administrator.getEmail());
-            preparedStatement.setString(3, administrator.getPassword());
-            preparedStatement.setInt(4, administrator.getId());
+            preparedStatement.setString(1, administrador.getNome());
+            preparedStatement.setString(2, administrador.getEmail());
+            preparedStatement.setString(3, administrador.getPassword());
+            preparedStatement.setInt(4, administrador.getId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -837,7 +837,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
         return nrAdministradores;
     }
 
-    public int authenticateAdministrator(String username, String password) {
+    public int authenticateAdministrador(String username, String password) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, password FROM administradores WHERE email = ?")) {
     
@@ -854,7 +854,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
         return -1;
     }
 
-    public Administrator getAdministrador(int id) {
+    public Administrador getAdministrador(int id) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM administradores WHERE id = ?")) {
     
@@ -866,7 +866,7 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
                     String email = resultSet.getString("email");
                     String password = resultSet.getString("password");
                 
-                    return new Administrator(id, nome, email, password);
+                    return new Administrador(id, nome, email, password);
                 }
             }
         } catch (SQLException e) {
