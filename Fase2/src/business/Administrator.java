@@ -2,6 +2,8 @@ package src.business;
 
 import java.util.Objects;
 
+import lib.BCrypt;
+
 public class Administrator {
     private int id;
     private String nome;
@@ -12,7 +14,7 @@ public class Administrator {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public int getId() {

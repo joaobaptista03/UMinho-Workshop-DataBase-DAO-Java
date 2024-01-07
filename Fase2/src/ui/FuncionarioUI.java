@@ -118,7 +118,7 @@ public class FuncionarioUI {
         try {
             Funcionario funcionario = oficinaDAO.getFuncionario(funcionarioID);
     
-            System.out.println("Horário de trabalho do funcionário " + funcionario.getNome() + ":");
+            System.out.println("O seu horário establecido: " + funcionario.getNome() + ":");
             System.out.println("Hora de entrada: " + funcionario.getHoraEntrada());
             System.out.println("Hora de saída: " + funcionario.getHoraSaida());
 
@@ -126,7 +126,7 @@ public class FuncionarioUI {
             List<Servico> servicos = oficinaDAO.servicosEntreDatas(LocalDate.now(), LocalDate.now().plusMonths(1));
             for (Servico servico : servicos)
                 if (servico.getFuncionario().getId() == funcionarioID)
-                    System.out.println("Serviço " + servico.getId() + " - " + servico.getEstado() + " - " + servico.getDataHora());
+                    System.out.println("Serviço " + servico.getId() + " - " + servico.getEstado() + " - " + servico.getDataHora() + " - " + servico.getVeiculo().getMatricula() + " - " + servico.getServicoTipo());
 
         } catch (NumberFormatException e) {
             e.printStackTrace();

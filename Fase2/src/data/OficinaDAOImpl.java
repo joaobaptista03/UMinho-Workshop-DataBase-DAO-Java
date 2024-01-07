@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lib.BCrypt;
 import src.business.*;
 import src.business.Servico.ServicoTipo;
 import src.business.Veiculo.TipoMotor;
@@ -154,14 +155,13 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
 
     public int authenticateCliente(String username, String password) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM clientes WHERE email = ? AND password = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, password FROM clientes WHERE email = ?")) {
     
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
     
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("id");
+                    if (BCrypt.checkpw(password, resultSet.getString("password"))) return resultSet.getInt("id");
                 }
             }
         } catch (SQLException e) {
@@ -294,14 +294,14 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
 
     public int authenticateFuncionario(String username, String password) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM funcionarios WHERE email = ? AND password = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, password FROM funcionarios WHERE email = ?")) {
     
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
     
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("id");
+                    if (BCrypt.checkpw(password, resultSet.getString("password"))) return resultSet.getInt("id");
+
                 }
             }
         } catch (SQLException e) {
@@ -838,14 +838,13 @@ public class OficinaDAOImpl implements OficinaDAOFacade {
 
     public int authenticateAdministrator(String username, String password) {
         try (Connection connection = DriverManager.getConnection(URL + "OficinaDB", USERNAME, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM administradores WHERE email = ? AND password = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, password FROM administradores WHERE email = ?")) {
     
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
     
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("id");
+                    if (BCrypt.checkpw(password, resultSet.getString("password"))) return resultSet.getInt("id");
                 }
             }
         } catch (SQLException e) {

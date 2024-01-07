@@ -1,5 +1,7 @@
 package src.business;
 
+import lib.BCrypt;
+
 public class Cliente {
     private int id;
     private String nome;
@@ -15,7 +17,7 @@ public class Cliente {
         this.nif = nif;
         this.morada = morada;
         this.email = email;
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
         this.telefone = telefone;
     }
 

@@ -4,6 +4,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
+import lib.BCrypt;
+
 public class Funcionario {
     private int id;
     private String nome;
@@ -21,7 +23,7 @@ public class Funcionario {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
         this.nrCartao = nrCartao;
         this.posto = posto;
         this.horaEntrada = horaEntrada;
